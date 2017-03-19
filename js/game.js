@@ -6,7 +6,7 @@ game.settings = {
     background: '#000',
     height: 700,
     width: 700,
-    grid: 35,
+    grid: 32,
     camera: {
         zone: 100,
         velocity: 4
