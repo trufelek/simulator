@@ -4,7 +4,7 @@ var play = {
     },
 
     create: function() {
-        // setup tiles map
+        // draw isometric tiles map
         game.stage.backgroundColor = game.settings.background;
 
         groundGroup = game.add.group();
@@ -47,9 +47,9 @@ var play = {
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 2, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 2, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ];
 
@@ -63,7 +63,7 @@ var play = {
                 }
 
                 if(tiles[i] == 1) {
-                    tile = game.add.isoSprite(x, y, 0, tilesArray[tiles[i]], 0, cageGroup);
+                    tile = new Cage(this, x, y, 0, tilesArray[tiles[i]]);
                     tile.anchor.set(0.5);
                 }
 
@@ -90,6 +90,10 @@ var play = {
                 i++;
             }
         }
+
+        //cageGroup.children.forEach(function(i, e) {
+        //    new Cage(this, cageGroup.children[e].x, cageGroup.children[e].y, cageGroup.children[e].z, cageGroup.children[e].key);
+        //});
     },
 
     update: function() {

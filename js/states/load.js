@@ -5,7 +5,7 @@ var load = {
 
     preload: function() {
         //load images
-        game.load.image('ground', 'img/ground.png');
+        game.load.image('ground', 'img/grid.png');
         game.load.image('cage', 'img/cage.png');
         game.load.image('incubator', 'img/incubator.png');
         game.load.image('slaugther_house_wall', 'img/slaugther_house_wall.png');
