@@ -10,12 +10,13 @@ game.settings = {
     camera: {
         zone: 100,
         velocity: 4
-    }
+    },
+    gui: null
 }
 
 // game states
 game.state.add('boot', boot);
 game.state.add('load', load);
-game.state.add('play', play);
+game.state.add('create', create);
 
 game.state.start('boot');
