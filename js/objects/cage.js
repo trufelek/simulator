@@ -21,7 +21,7 @@ function Cage(state, x, y, z, image) {
             label: 'condition',
             icon: 'condition_icon',
             decrease: 1,
-            increase: 25
+            increase: 5
         }
     };
 
@@ -80,7 +80,7 @@ Cage.prototype.init = function() {
     this.timer.clock = game.time.create();
 
     //create events
-    this.timer.event  = this.timer.clock.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 10, this.endTimer, this);
+    this.timer.event  = this.timer.clock.add(Phaser.Timer.MINUTE * 1 + Phaser.Timer.SECOND * 30, this.endTimer, this);
 
     // set loop event
     this.timer.loop = game.time.events.loop(Phaser.Timer.SECOND, this.updateAttributes, this);
