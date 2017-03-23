@@ -6,20 +6,22 @@ function Cage(state, x, y, z, image) {
 
     this.attributes = {
         hunger: {
-            max: 25,
+            max: 100,
             min: 0,
-            current: 25,
+            current: 100,
             label: 'hunger',
             icon: 'food_icon',
-            decrease: 1
+            decrease: 2,
+            increase: 25
         },
         condition: {
-            max: 25,
+            max: 100,
             min: 0,
-            current: 25,
+            current: 100,
             label: 'condition',
             icon: 'condition_icon',
-            decrease: 0.5
+            decrease: 1,
+            increase: 25
         }
     };
 
@@ -39,15 +41,15 @@ function Cage(state, x, y, z, image) {
         feed: {
             label: 'feed',
             icon: 'action_feed_icon',
-            position: 'left',
+            position: 'top',
             enabled: true,
             callback: this.feed
         },
         kill: {
             label: 'kill',
             icon: 'action_kill_icon',
-            position: 'top',
-            enabled: true,
+            position: 'left',
+            enabled: false,
             callback: this.kill
         },
         heal: {
@@ -72,11 +74,13 @@ Cage.prototype.init = function() {
     // add object to game
     game.add.existing(this);
 
+    this.events.onInputDown.add(this.click, this);
+
     // create timer
     this.timer.clock = game.time.create();
 
     //create events
-    this.timer.event  = this.timer.clock.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 10, this.endTimer, game);
+    this.timer.event  = this.timer.clock.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 10, this.endTimer, this);
 
     // set loop event
     this.timer.loop = game.time.events.loop(Phaser.Timer.SECOND, this.updateAttributes, this);
@@ -97,7 +101,7 @@ Cage.prototype.update = function() {
 
 Cage.prototype.click = function() {
     // show actions
-    game.settings.gui.showActions(this.position, this.actions);
+    game.settings.gui.showActions(this.id, this.position, this.actions);
 };
 
 
@@ -106,21 +110,31 @@ Cage.prototype.updateAttributes = function() {
     this.attributes.condition.current -= this.attributes.condition.current == this.attributes.condition.min ? 0 : this.attributes.condition.decrease;
 };
 
-Cage.prototype.feed = function() {
-    console.log('feed');
+Cage.prototype.feed = function(cage) {
+    if(cage.attributes.hunger.current + cage.attributes.hunger.increase >= cage.attributes.hunger.max) {
+        cage.attributes.hunger.current = cage.attributes.hunger.max;
+    } else {
+        cage.attributes.hunger.current += cage.attributes.hunger.increase
+    }
+
+    if(cage.attributes.condition.current + cage.attributes.condition.increase >= cage.attributes.condition.max) {
+        cage.attributes.condition.current = cage.attributes.condition.max;
+    } else {
+        cage.attributes.condition.current += cage.attributes.condition.increase
+    }
 };
 
-Cage.prototype.kill = function() {
+Cage.prototype.kill = function(cage) {
     console.log('kill');
 };
 
-Cage.prototype.heal = function() {
+Cage.prototype.heal = function(cage) {
     console.log('heal');
 };
 
 Cage.prototype.endTimer = function() {
-    // Stop the timer when the delayed event triggers
     console.log('cage is ready');
+    this.actions.kill.enabled = true;
 };
 
 Cage.prototype.debug = function() {

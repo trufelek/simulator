@@ -121,7 +121,7 @@ GUI.prototype.destroyTooltip = function() {
     }
 };
 
-GUI.prototype.showActions = function(position, actions) {
+GUI.prototype.showActions = function(id, position, actions) {
     this.destroyTooltip();
 
 
@@ -129,11 +129,11 @@ GUI.prototype.showActions = function(position, actions) {
         this.destroyActions();
     } else {
         this.state = 'actions';
-        this.createActions(position, actions);
+        this.createActions(id, position, actions);
     }
 };
 
-GUI.prototype.createActions = function(position, actions) {
+GUI.prototype.createActions = function(id, position, actions) {
     this.actions = game.add.sprite(position.x, position.y, 'action_line');
     this.actions.y -= this.actions.height + 15;
 
@@ -169,7 +169,7 @@ GUI.prototype.createActions = function(position, actions) {
             cta.input.useHandCursor = true;
             cta.events.onInputOver.add(this.actionOver, {cta: cta, action: action, gui: this});
             cta.events.onInputOut.add(this.actionOut, {cta: cta, action: action, gui: this});
-            cta.events.onInputDown.add(this.actionDown, {cta: cta, action: action, gui: this});
+            cta.events.onInputDown.add(this.actionDown, {cta: cta, action: action, gui: this, cage: Cage.all[id]});
         }
 
     };
@@ -192,7 +192,7 @@ GUI.prototype.actionOut = function() {
 };
 
 GUI.prototype.actionDown = function() {
-    this.action.callback.call();
+    this.action.callback(this.cage);
     this.gui.destroyActions();
 };
 

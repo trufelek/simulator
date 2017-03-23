@@ -12,7 +12,6 @@ function Prefab(state, x, y, z, image) {
     this.inputEnabled = true;
     this.input.useHandCursor = true;
 
-    this.events.onInputDown.add(this.click, this);
     this.events.onInputOver.add(this.inputOver, this);
     this.events.onInputOut.add(this.inputOut, this);
 
