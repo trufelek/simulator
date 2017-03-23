@@ -35,6 +35,30 @@ function Cage(state, x, y, z, image) {
         loop: null
     };
 
+    this.actions = {
+        feed: {
+            label: 'feed',
+            icon: 'action_feed_icon',
+            position: 'left',
+            enabled: true,
+            callback: this.feed
+        },
+        kill: {
+            label: 'kill',
+            icon: 'action_kill_icon',
+            position: 'top',
+            enabled: true,
+            callback: this.kill
+        },
+        heal: {
+            label: 'heal',
+            icon: 'action_heal_icon',
+            position: 'right',
+            enabled: false,
+            callback: this.heal
+        }
+    };
+
     Cage.count ++;
     Cage.all[this.id] = this;
 
@@ -65,14 +89,15 @@ Cage.prototype.init = function() {
 Cage.prototype.update = function() {
     if(this.input.pointerOver()) {
         // show info in tooltip
-        game.settings.gui.createCageTooltip(this.position, this.timer, this.attributes);
+        game.settings.gui.showTooltip(this.position, this.timer, this.attributes);
     }
 
     this.debug();
 };
 
-Cage.prototype.click = function(sprite, pointer) {
-    console.log('click!');
+Cage.prototype.click = function() {
+    // show actions
+    game.settings.gui.showActions(this.position, this.actions);
 };
 
 
@@ -81,6 +106,17 @@ Cage.prototype.updateAttributes = function() {
     this.attributes.condition.current -= this.attributes.condition.current == this.attributes.condition.min ? 0 : this.attributes.condition.decrease;
 };
 
+Cage.prototype.feed = function() {
+    console.log('feed');
+};
+
+Cage.prototype.kill = function() {
+    console.log('kill');
+};
+
+Cage.prototype.heal = function() {
+    console.log('heal');
+};
 
 Cage.prototype.endTimer = function() {
     // Stop the timer when the delayed event triggers
