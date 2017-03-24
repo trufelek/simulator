@@ -16,7 +16,9 @@ var create = {
         incubatorGroup = game.add.group();
         slaugtherhouseGroup = game.add.group();
         officeGroup = game.add.group();
-        storageGroup = game.add.group();
+        storeGroup = game.add.group();
+        foodStorageGroup = game.add.group();
+        enviromentGroup = game.add.group();
 
         var tile;
 
@@ -24,35 +26,32 @@ var create = {
         tilesArray[0] = 'ground';
         tilesArray[1] = 'cage';
         tilesArray[2] = 'incubator';
-        tilesArray[3] = 'slaugther_house_wall';
-        tilesArray[4] = 'slaugther_house_windows';
-        tilesArray[5] = 'slaugther_house_door';
-        tilesArray[6] = 'slaugther_house_door_2';
-        tilesArray[7] = 'storage_wall';
-        tilesArray[8] = 'storage_door';
-        tilesArray[9] = 'office_wall';
-        tilesArray[10] = 'office_windows';
-        tilesArray[11] = 'office_door';
+        tilesArray[3] = 'slaugtherhouse';
+        tilesArray[4] = 'storage';
+        tilesArray[5] = 'office';
+        tilesArray[6] = 'foodstorage';
+        tilesArray[7] = 'tree1';
+        tilesArray[8] = 'tree2';
 
         var tiles = [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 8, 7, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0,
-            0, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0,
-            0, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0,
-            0, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0,
-            0, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 3, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0,
+            8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0,
+            0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0,
+            7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ];
@@ -67,7 +66,7 @@ var create = {
                 }
 
                 if(tiles[i] == 1) {
-                    tile = new Cage(this, x, y, 0, tilesArray[tiles[i]]);
+                    tile = new Cage(this, x, y, 0, tilesArray[tiles[i]], cageGroup);
                     tile.anchor.set(0.5);
                 }
 
@@ -76,18 +75,28 @@ var create = {
                     tile.anchor.set(0.5);
                 }
 
-                if(tiles[i] >= 3 && tiles[i] <= 6) {
+                if(tiles[i] == 3) {
                     tile = game.add.isoSprite(x, y, 0, tilesArray[tiles[i]], 0, slaugtherhouseGroup);
                     tile.anchor.set(0.5);
                 }
 
-                if(tiles[i] >= 7 && tiles[i] <= 8) {
-                    tile = game.add.isoSprite(x, y, 0, tilesArray[tiles[i]], 0, storageGroup);
+                if(tiles[i] == 4) {
+                    tile = game.add.isoSprite(x, y, 0, tilesArray[tiles[i]], 0, storeGroup);
                     tile.anchor.set(0.5);
                 }
 
-                if(tiles[i] >= 9 && tiles[i] <= 11) {
+                if(tiles[i] == 5) {
                     tile = game.add.isoSprite(x, y, 0, tilesArray[tiles[i]], 0, officeGroup);
+                    tile.anchor.set(0.5);
+                }
+
+                if(tiles[i] == 6) {
+                    game.farm.foodStorage = new FoodStorage(this, x, y, 0, tilesArray[tiles[i]], 0, foodStorageGroup);
+                    game.farm.foodStorage.anchor.set(0.5);
+                }
+
+                if(tiles[i] == 7 || tiles[i] == 8) {
+                    tile = game.add.isoSprite(x, y, 0, tilesArray[tiles[i]], 0, enviromentGroup);
                     tile.anchor.set(0.5);
                 }
 
@@ -117,16 +126,19 @@ var create = {
         if (game.input.mousePointer.y > game.height - game.settings.camera.zone) {
             game.camera.y += game.settings.camera.velocity;
         }
-
     },
 
     updateIsometricMap: function() {
+        game.iso.topologicalSort(groundGroup);
         game.iso.topologicalSort(slaugtherhouseGroup);
         game.iso.topologicalSort(officeGroup);
-        game.iso.topologicalSort(storageGroup);
+        game.iso.topologicalSort(storeGroup);
+        game.iso.topologicalSort(foodStorageGroup);
+        game.iso.topologicalSort(enviromentGroup);
     },
 
     render: function() {
         game.debug.inputInfo(15, 25);
+        game.debug.cameraInfo(game.camera, 15, window.innerHeight - 100);
     }
 };

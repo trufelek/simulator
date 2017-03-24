@@ -3,7 +3,7 @@ var game = new Phaser.Game('100%', '100%', Phaser.AUTO, 'game');
 
 // game settings
 game.settings = {
-    background: '#000',
+    background: '#669933',
     height: 700,
     width: 700,
     grid: 32,
@@ -12,7 +12,9 @@ game.settings = {
         velocity: 4
     },
     gui: null
-}
+};
+
+game.farm = {};
 
 // game states
 game.state.add('boot', boot);

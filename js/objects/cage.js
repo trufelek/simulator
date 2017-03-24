@@ -5,11 +5,11 @@ function Cage(state, x, y, z, image) {
     Prefab.call(this, state, x, y, z, image);
 
     this.attributes = {
-        hunger: {
+        feed: {
             max: 100,
             min: 0,
             current: 100,
-            label: 'hunger',
+            label: 'Poziom nakarmienia',
             icon: 'food_icon',
             decrease: 2,
             increase: 25
@@ -18,7 +18,7 @@ function Cage(state, x, y, z, image) {
             max: 100,
             min: 0,
             current: 100,
-            label: 'condition',
+            label: 'Stan zwierząt',
             icon: 'condition_icon',
             decrease: 1,
             increase: 5
@@ -39,21 +39,21 @@ function Cage(state, x, y, z, image) {
 
     this.actions = {
         feed: {
-            label: 'feed',
+            label: 'Nakarm',
             icon: 'action_feed_icon',
             position: 'top',
             enabled: true,
             callback: this.feed
         },
         kill: {
-            label: 'kill',
+            label: 'Zabij',
             icon: 'action_kill_icon',
             position: 'left',
             enabled: false,
             callback: this.kill
         },
         heal: {
-            label: 'heal',
+            label: 'Wylecz',
             icon: 'action_heal_icon',
             position: 'right',
             enabled: false,
@@ -61,8 +61,8 @@ function Cage(state, x, y, z, image) {
         }
     };
 
+    Cage.all[Cage.count] = this;
     Cage.count ++;
-    Cage.all[this.id] = this;
 
     this.init();
 }
@@ -93,7 +93,7 @@ Cage.prototype.init = function() {
 Cage.prototype.update = function() {
     if(this.input.pointerOver()) {
         // show info in tooltip
-        game.settings.gui.showTooltip(this.position, this.timer, this.attributes);
+        game.settings.gui.showTooltip(this.position, this.timer, this.attributes, null);
     }
 
     this.debug();
@@ -106,29 +106,51 @@ Cage.prototype.click = function() {
 
 
 Cage.prototype.updateAttributes = function() {
-    this.attributes.hunger.current -= this.attributes.hunger.current == this.attributes.hunger.min ? 0 : this.attributes.hunger.decrease;
-    this.attributes.condition.current -= this.attributes.condition.current == this.attributes.condition.min ? 0 : this.attributes.condition.decrease;
-};
-
-Cage.prototype.feed = function(cage) {
-    if(cage.attributes.hunger.current + cage.attributes.hunger.increase >= cage.attributes.hunger.max) {
-        cage.attributes.hunger.current = cage.attributes.hunger.max;
+    // decrease feed lvl
+    if(this.attributes.feed.current - this.attributes.feed.decrease <= this.attributes.feed.min) {
+        this.attributes.feed.current = this.attributes.feed.min;
     } else {
-        cage.attributes.hunger.current += cage.attributes.hunger.increase
+        this.attributes.feed.current -= this.attributes.feed.decrease
     }
 
-    if(cage.attributes.condition.current + cage.attributes.condition.increase >= cage.attributes.condition.max) {
-        cage.attributes.condition.current = cage.attributes.condition.max;
+    // decrease condition lvl
+    if(this.attributes.condition.current - this.attributes.condition.decrease <= this.attributes.condition.min) {
+        this.attributes.condition.current = this.attributes.condition.min;
     } else {
-        cage.attributes.condition.current += cage.attributes.condition.increase
+        this.attributes.condition.current -= this.attributes.condition.decrease
     }
+
 };
 
-Cage.prototype.kill = function(cage) {
+Cage.prototype.feed = function(o) {
+    var food = 0;
+
+    // increase feed lvl
+    if(o.attributes.feed.current + o.attributes.feed.increase >= o.attributes.feed.max) {
+        food = o.attributes.feed.max - o.attributes.feed.current;
+        o.attributes.feed.current = o.attributes.feed.max;
+    } else {
+        food = o.attributes.feed.increase;
+        o.attributes.feed.current += o.attributes.feed.increase;
+    }
+
+    // increase condition lvl
+    if(o.attributes.condition.current + o.attributes.condition.increase >= o.attributes.condition.max) {
+        o.attributes.condition.current = o.attributes.condition.max;
+    } else {
+        o.attributes.condition.current += o.attributes.condition.increase
+    }
+
+    // decrease food lvl in food store
+    game.farm.foodStorage.consumeFood(food);
+
+};
+
+Cage.prototype.kill = function(o) {
     console.log('kill');
 };
 
-Cage.prototype.heal = function(cage) {
+Cage.prototype.heal = function(o) {
     console.log('heal');
 };
 
@@ -138,7 +160,14 @@ Cage.prototype.endTimer = function() {
 };
 
 Cage.prototype.debug = function() {
-    game.debug.text('Cage hunger: ' + this.attributes.hunger.current + ' / ' + this.attributes.hunger.max, 15, 150);
+    game.debug.text('Cage feed: ' + this.attributes.feed.current + ' / ' + this.attributes.feed.max, 15, 150);
     game.debug.text('Cage condition: ' + this.attributes.condition.current + ' / ' + this.attributes.condition.max, 15, 175);
     game.debug.text('Cage timer: ' + game.settings.gui.formatTime(Math.round((this.timer.event.delay - this.timer.clock.ms) / 1000)), 15, 200);
+};
+
+Cage.changeActionStatus = function(action, status) {
+    for(c in Cage.all) {
+        var cage = Cage.all[c];
+        cage.actions[action].enabled = status;
+    }
 };

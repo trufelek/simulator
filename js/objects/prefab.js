@@ -1,3 +1,4 @@
+Prefab.all = {};
 Prefab.count = 0;
 
 function Prefab(state, x, y, z, image) {
@@ -15,6 +16,7 @@ function Prefab(state, x, y, z, image) {
     this.events.onInputOver.add(this.inputOver, this);
     this.events.onInputOut.add(this.inputOut, this);
 
+    Prefab.all[this.id] = this;
     Prefab.count ++;
 }
 

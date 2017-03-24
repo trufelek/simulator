@@ -15,7 +15,7 @@ var boot = {
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
         //set middle point of the world
-        game.iso.anchor.setTo(0.5, 0);
+        game.iso.anchor.setTo(0.5, 0.05);
     },
 
     create: function() {

@@ -2,7 +2,7 @@ function GUI() {
     this.styles = {
         font: '14px Arial',
         fill: '#000000',
-        wordWrap: true,
+        wordWrap: false,
         align: 'left'
     };
 
@@ -13,6 +13,10 @@ function GUI() {
             little: '0xFF9933',
             none: '0xD62B2B'
         }
+    };
+
+    this.tint = {
+        enabled: '0xB3B3B3'
     };
 
     this.padding = 30;
@@ -33,7 +37,7 @@ GUI.prototype.createTooltip = function(position) {
     // set tooltip position
     tooltip_line.x = 0 - tooltip_line.width;
     this.tooltip.x = position.x + tooltip_line.width;
-    this.tooltip.y = position.y - this.tooltip.height - tooltip_line.height / 2 - 15;
+    this.tooltip.y = position.y - this.tooltip.height - tooltip_line.height / 2;
 
 };
 
@@ -99,7 +103,11 @@ GUI.prototype.createAttributeBars = function(x, y, attrs) {
     }
 };
 
-GUI.prototype.showTooltip = function(position, timer, attrs) {
+GUI.prototype.displayInfo = function(x, y, info) {
+    this.tooltip.addChild(game.add.text(x, y, info, this.styles));
+};
+
+GUI.prototype.showTooltip = function(position, timer, attrs, info) {
     if(this.state == 'actions') return false;
 
     this.destroyTooltip();
@@ -108,9 +116,25 @@ GUI.prototype.showTooltip = function(position, timer, attrs) {
 
     this.createTooltip(position);
 
-    this.createTimeBar(15, 15, timer);
+    var x = 15;
+    var y = 15;
 
-    this.createAttributeBars(15, 45, attrs);
+
+    if(timer) {
+        this.createTimeBar(x, y, timer);
+
+        y += 30;
+    }
+
+    if(attrs) {
+        this.createAttributeBars(x, y, attrs);
+
+        y += 30 * Object.keys(attrs).length;
+    }
+
+    if(info) {
+        this.displayInfo(x, y, info);
+    }
 
 };
 
@@ -159,20 +183,22 @@ GUI.prototype.createActions = function(id, position, actions) {
                 break;
         }
 
-        if(action.enabled) {
-            var cta =  this.actions.addChild(game.add.sprite(x, y, action.icon));
-            cta.anchor.set(0.5);
-            cta.width = 50;
-            cta.height = 50;
+        var cta =  this.actions.addChild(game.add.sprite(x, y, action.icon));
+        cta.anchor.set(0.5);
+        cta.width = 50;
+        cta.height = 50;
 
+        if(action.enabled) {
             cta.inputEnabled = true;
             cta.input.useHandCursor = true;
             cta.events.onInputOver.add(this.actionOver, {cta: cta, action: action, gui: this});
             cta.events.onInputOut.add(this.actionOut, {cta: cta, action: action, gui: this});
-            cta.events.onInputDown.add(this.actionDown, {cta: cta, action: action, gui: this, cage: Cage.all[id]});
+            cta.events.onInputDown.add(this.actionDown, {cta: cta, action: action, gui: this, object: Prefab.all[id]});
+        } else {
+            cta.tint = this.tint.enabled;
         }
 
-    };
+    }
 };
 
 GUI.prototype.destroyActions = function() {
@@ -192,7 +218,7 @@ GUI.prototype.actionOut = function() {
 };
 
 GUI.prototype.actionDown = function() {
-    this.action.callback(this.cage);
+    this.action.callback(this.object);
     this.gui.destroyActions();
 };
 

@@ -8,19 +8,12 @@ var load = {
         game.load.image('ground', 'img/grid.png');
         game.load.image('cage', 'img/cage.png');
         game.load.image('incubator', 'img/incubator.png');
-
-        game.load.image('slaugther_house_wall', 'img/slaugther_house_wall.png');
-        game.load.image('slaugther_house_windows', 'img/slaugther_house_windows.png');
-        game.load.image('slaugther_house_door', 'img/slaugther_house_door.png');
-        game.load.image('slaugther_house_door_2', 'img/slaugther_house_door_2.png');
-
-        game.load.image('storage_door', 'img/storage_door.png');
-        game.load.image('storage_wall', 'img/storage_wall.png');
-
-        game.load.image('office_wall', 'img/office_wall.png');
-        game.load.image('office_windows', 'img/office_windows.png');
-        game.load.image('office_door', 'img/office_door.png');
-        game.load.image('office_door', 'img/office_door.png');
+        game.load.image('office', 'img/office.png');
+        game.load.image('foodstorage', 'img/foodstorage.png');
+        game.load.image('storage', 'img/storage.png');
+        game.load.image('slaugtherhouse', 'img/slaugtherhouse.png');
+        game.load.image('tree1', 'img/tree1.png');
+        game.load.image('tree2', 'img/tree2.png');
 
         // gui elements
         game.load.image('tooltip', 'img/gui/tooltip.png');
@@ -36,6 +29,7 @@ var load = {
         game.load.image('action_feed_icon', 'img/icons/action_feed_icon.png');
         game.load.image('action_kill_icon', 'img/icons/action_kill_icon.png');
         game.load.image('action_heal_icon', 'img/icons/action_heal_icon.png');
+        game.load.image('action_buy_food', 'img/icons/action_buy_food.png');
     },
 
     create: function() {
