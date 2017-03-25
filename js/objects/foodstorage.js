@@ -53,6 +53,7 @@ FoodStorage.prototype.buyFood = function(o) {
     // decrease food lvl in a store
     if(o.attributes.food.current + o.attributes.food.increase >= o.attributes.food.max) {
         o.attributes.food.current = o.attributes.food.max;
+        o.actions.buyFood.enabled = false;
     } else {
         o.attributes.food.current += o.attributes.food.increase;
     }
@@ -72,4 +73,6 @@ FoodStorage.prototype.consumeFood = function(food) {
     } else {
         this.attributes.food.current -= food;
     }
+
+    this.actions.buyFood.enabled = true;
 };
