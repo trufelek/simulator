@@ -1,11 +1,11 @@
 Prefab.all = {};
 Prefab.count = 0;
 
-function Prefab(state, x, y, z, image) {
-    Phaser.Plugin.Isometric.IsoSprite.call(this, state.game, x, y, z, image);
+function Prefab(game, x, y, z, image, group) {
+    Phaser.Plugin.Isometric.IsoSprite.call(this, game, x, y, z, image, group);
 
     this.id = Prefab.count;
-    this.position = {x: x, y: y};
+    this.position = {x: x, y: y, z: z};
     this.image = image;
     this.highlight_tint = '0xfff401';
     this.default_tint = '0xffffff';

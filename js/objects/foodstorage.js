@@ -1,16 +1,16 @@
-function FoodStorage(state, x, y, z, image) {
-    Prefab.call(this, state, x, y, z, image);
+function FoodStorage(game, x, y, z, image, group) {
+    Prefab.call(this, game, x, y, z, image, group);
 
     this.attributes = {
         food: {
             max: 500,
             min: 0,
-            current: 10,
+            current: 200,
             label: 'Karma',
             icon: 'food_icon',
             decrease: 10,
             increase: 100
-        },
+        }
     };
 
     this.actions = {
@@ -21,6 +21,10 @@ function FoodStorage(state, x, y, z, image) {
             enabled: true,
             callback: this.buyFood
         }
+    };
+
+    this.state = {
+        empty: false
     };
 
     this.init();
@@ -50,7 +54,7 @@ FoodStorage.prototype.click = function() {
 };
 
 FoodStorage.prototype.buyFood = function(o) {
-    // decrease food lvl in a store
+    // increase food lvl in a store
     if(o.attributes.food.current + o.attributes.food.increase >= o.attributes.food.max) {
         o.attributes.food.current = o.attributes.food.max;
         o.actions.buyFood.enabled = false;
@@ -58,8 +62,7 @@ FoodStorage.prototype.buyFood = function(o) {
         o.attributes.food.current += o.attributes.food.increase;
     }
 
-    // enable cage feed action
-    Cage.changeActionStatus('feed', true);
+    o.state.empty = false;
 
 };
 
@@ -67,9 +70,7 @@ FoodStorage.prototype.consumeFood = function(food) {
     // decrease food lvl in a store
     if(this.attributes.food.current - food <= this.attributes.food.min) {
         this.attributes.food.current = this.attributes.food.min;
-
-        // disable cage feed action
-        Cage.changeActionStatus('feed', false);
+        this.state.empty = true;
     } else {
         this.attributes.food.current -= food;
     }

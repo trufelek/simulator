@@ -22,6 +22,7 @@ function GUI() {
     this.padding = 30;
 
     this.tooltip = null;
+    this.content = null;
     this.actions = null;
 
     this.state = 'idle';
@@ -32,18 +33,40 @@ GUI.prototype.createTooltip = function(position) {
     this.tooltip = game.add.sprite(position.x, position.y, 'tooltip');
 
     // add line from tooltip to object
-    var tooltip_line = this.tooltip.addChild(game.add.sprite(0, this.tooltip.height / 2, 'tooltip_line'));
+    tooltip_line = this.tooltip.addChild(game.add.sprite(0, this.tooltip.height / 2, 'tooltip_line'));
 
     // set tooltip position
     tooltip_line.x = 0 - tooltip_line.width;
     this.tooltip.x = position.x + tooltip_line.width;
     this.tooltip.y = position.y - this.tooltip.height - tooltip_line.height / 2;
 
+    // add tooltip content container
+    this.content = this.tooltip.addChild(game.add.sprite(0, 0));
+
+    this.adjustTooltipToCamera();
+
+};
+
+GUI.prototype.adjustTooltipToCamera = function() {
+    // adjust tooltip to camera view x
+    if(this.tooltip.x + this.tooltip.width > game.camera.view.x + game.camera.view.width) {
+        this.tooltip.x -= this.tooltip.width / 2;
+        this.tooltip.scale.x *= -1;
+
+        this.content.scale.x *= -1;
+        this.content.x -= this.tooltip.width;
+    }
+
+    // adjust tooltip to camera view y
+    if(this.tooltip.y < game.camera.view.y) {
+        this.tooltip.y += this.tooltip.height + tooltip_line.height / 2 + 15;
+        tooltip_line.scale.y *= -1;
+    }
 };
 
 GUI.prototype.createBar = function(x, y, percentage) {
-    var progress = this.tooltip.addChild(game.add.sprite(x, y, 'progress_bar'));
-    var bar = this.tooltip.addChild(game.add.sprite(x, y, 'bar'));
+    var progress = this.content.addChild(game.add.sprite(x, y, 'progress_bar'));
+    var bar = this.content.addChild(game.add.sprite(x, y, 'bar'));
     var tint;
 
     if(percentage >= 80) {
@@ -104,7 +127,7 @@ GUI.prototype.createAttributeBars = function(x, y, attrs) {
 };
 
 GUI.prototype.displayInfo = function(x, y, info) {
-    this.tooltip.addChild(game.add.text(x, y, info, this.styles));
+    this.content.addChild(game.add.text(x, y, info, this.styles));
 };
 
 GUI.prototype.showTooltip = function(position, timer, attrs, info) {
@@ -122,13 +145,11 @@ GUI.prototype.showTooltip = function(position, timer, attrs, info) {
 
     if(timer) {
         this.createTimeBar(x, y, timer);
-
         y += 30;
     }
 
     if(attrs) {
         this.createAttributeBars(x, y, attrs);
-
         y += 30 * Object.keys(attrs).length;
     }
 
@@ -159,6 +180,7 @@ GUI.prototype.showActions = function(id, position, actions) {
 
 GUI.prototype.createActions = function(id, position, actions) {
     this.actions = game.add.sprite(position.x, position.y, 'action_line');
+    this.content = this.actions.addChild(game.add.sprite(0, 0));
     this.actions.y -= this.actions.height + 15;
 
     for(a in actions) {
@@ -183,7 +205,7 @@ GUI.prototype.createActions = function(id, position, actions) {
                 break;
         }
 
-        var cta =  this.actions.addChild(game.add.sprite(x, y, action.icon));
+        var cta =  this.content.addChild(game.add.sprite(x, y, action.icon));
         cta.anchor.set(0.5);
         cta.width = 50;
         cta.height = 50;
@@ -197,7 +219,18 @@ GUI.prototype.createActions = function(id, position, actions) {
         } else {
             cta.tint = this.tint.enabled;
         }
+    }
 
+    this.adjustActionsToCamera();
+};
+
+GUI.prototype.adjustActionsToCamera = function() {
+    // adjust tooltip to camera view y
+    if(this.actions.y - 50 < game.camera.view.y) {
+        this.actions.y += this.actions.height * 2;
+        this.actions.scale.y *= -1;
+
+        this.content.scale.y *= -1;
     }
 };
 
