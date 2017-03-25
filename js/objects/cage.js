@@ -1,8 +1,8 @@
 Cage.all = {};
 Cage.count = 0;
 
-function Cage(state, x, y, z, image) {
-    Prefab.call(this, state, x, y, z, image);
+function Cage(game, x, y, z, image, enabled, group) {
+    Prefab.call(this, game, x, y, z, image, group);
 
     this.attributes = {
         feed: {
@@ -28,7 +28,7 @@ function Cage(state, x, y, z, image) {
     this.state = {
         ready: false,
         ill: false,
-        full: true
+        enabled: enabled
     };
 
     this.timer = {
@@ -76,34 +76,51 @@ Cage.prototype.init = function() {
 
     this.events.onInputDown.add(this.click, this);
 
-    // create timer
-    this.timer.clock = game.time.create();
-
-    //create events
-    this.timer.event  = this.timer.clock.add(Phaser.Timer.MINUTE * 1 + Phaser.Timer.SECOND * 30, this.endTimer, this);
-
-    // set loop event
-    this.timer.loop = game.time.events.loop(Phaser.Timer.SECOND, this.updateAttributes, this);
-
-    //start timer
-    this.timer.clock.start();
-
+    if(this.state.enabled) {
+        this.createTimer();
+    }
 };
 
 Cage.prototype.update = function() {
     if(this.input.pointerOver()) {
         // show info in tooltip
-        game.settings.gui.showTooltip(this.position, this.timer, this.attributes, null);
+        if(this.state.enabled) {
+            game.settings.gui.showTooltip(this.position, this.timer, this.attributes, null);
+        } else {
+            var info = 'Ta klatka jest pusta.'
+            game.settings.gui.showTooltip(this.position, null, null, info);
+        }
     }
-
-    this.debug();
 };
 
 Cage.prototype.click = function() {
     // show actions
-    game.settings.gui.showActions(this.id, this.position, this.actions);
+    if(this.state.enabled) {
+        game.settings.gui.showActions(this.id, this.position, this.actions);
+    }
 };
 
+Cage.prototype.createTimer = function() {
+    // create timer & timer event & timer loop
+    this.timer.clock = game.time.create();
+    this.timer.event  = this.timer.clock.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 10, this.endTimer, this);
+    this.timer.loop = game.time.events.loop(Phaser.Timer.SECOND, this.updateAttributes, this);
+
+    //start timer
+    this.timer.clock.start();
+};
+
+Cage.prototype.destroyTimer = function() {
+    // remove events & destroy timer
+    this.timer.clock.remove(this.timer.event);
+    game.time.events.remove(this.timer.loop);
+    this.timer.clock.destroy();
+
+    // reset timer values
+    this.timer.clock = null;
+    this.timer.event = null;
+    this.timer.loop = null;
+};
 
 Cage.prototype.updateAttributes = function() {
     // decrease feed lvl
@@ -148,15 +165,25 @@ Cage.prototype.feed = function(o) {
 
 Cage.prototype.kill = function(o) {
     console.log('kill');
+    game.farm.slaughterhouse.increaseKillStack();
+    o.emptyCage();
+    o.destroyTimer();
 };
 
 Cage.prototype.heal = function(o) {
     console.log('heal');
 };
 
+Cage.prototype.emptyCage = function() {
+    this.state.enabled = false;
+    this.attributes.feed.current = this.attributes.feed.max;
+    this.attributes.condition.current = this.attributes.condition.max;
+};
+
 Cage.prototype.endTimer = function() {
     console.log('cage is ready');
     this.actions.kill.enabled = true;
+    this.state.ready = true;
 };
 
 Cage.prototype.debug = function() {

@@ -14,7 +14,7 @@ var create = {
         groundGroup = game.add.group();
         cageGroup = game.add.group();
         incubatorGroup = game.add.group();
-        slaugtherhouseGroup = game.add.group();
+        slaughterhouseGroup = game.add.group();
         officeGroup = game.add.group();
         storeGroup = game.add.group();
         foodStorageGroup = game.add.group();
@@ -26,7 +26,7 @@ var create = {
         tilesArray[0] = 'ground';
         tilesArray[1] = 'cage';
         tilesArray[2] = 'incubator';
-        tilesArray[3] = 'slaugtherhouse';
+        tilesArray[3] = 'slaughterhouse';
         tilesArray[4] = 'storage';
         tilesArray[5] = 'office';
         tilesArray[6] = 'foodstorage';
@@ -66,7 +66,7 @@ var create = {
                 }
 
                 if(tiles[i] == 1) {
-                    tile = new Cage(this, x, y, 0, tilesArray[tiles[i]], cageGroup);
+                    tile = new Cage(game, x, y, 0, tilesArray[tiles[i]], true, cageGroup);
                     tile.anchor.set(0.5);
                 }
 
@@ -76,8 +76,8 @@ var create = {
                 }
 
                 if(tiles[i] == 3) {
-                    tile = game.add.isoSprite(x, y, 0, tilesArray[tiles[i]], 0, slaugtherhouseGroup);
-                    tile.anchor.set(0.5);
+                    game.farm.slaughterhouse = new Slaughterhouse(game, x, y, 0, tilesArray[tiles[i]], 0, slaughterhouseGroup);
+                    game.farm.slaughterhouse.anchor.set(0.5);
                 }
 
                 if(tiles[i] == 4) {
@@ -91,7 +91,7 @@ var create = {
                 }
 
                 if(tiles[i] == 6) {
-                    game.farm.foodStorage = new FoodStorage(this, x, y, 0, tilesArray[tiles[i]], 0, foodStorageGroup);
+                    game.farm.foodStorage = new FoodStorage(game, x, y, 0, tilesArray[tiles[i]], 0, foodStorageGroup);
                     game.farm.foodStorage.anchor.set(0.5);
                 }
 
@@ -105,7 +105,8 @@ var create = {
         }
 
         game.iso.topologicalSort(groundGroup);
-        game.iso.topologicalSort(slaugtherhouseGroup);
+        game.iso.topologicalSort(cageGroup);
+        game.iso.topologicalSort(slaughterhouseGroup);
         game.iso.topologicalSort(officeGroup);
         game.iso.topologicalSort(storeGroup);
         game.iso.topologicalSort(foodStorageGroup);
