@@ -74,33 +74,68 @@ Cage.prototype.init = function() {
     // add object to game
     game.add.existing(this);
 
+    // add click event
     this.events.onInputDown.add(this.click, this);
 
-    if(this.state.enabled) {
-        this.createTimer();
-    }
+    // create timer
+    this.createTimer();
 };
 
 Cage.prototype.update = function() {
+    // show/hide gui
+   this.updateTooltip();
+
+    // enable/disable actions
+    this.updateActions();
+};
+
+Cage.prototype.updateTooltip = function() {
+    // show info in tooltip on hover
     if(this.input.pointerOver()) {
-        // show info in tooltip
         if(this.state.enabled) {
             game.settings.gui.showTooltip(this.position, this.timer, this.attributes, null);
         } else {
-            var info = 'Ta klatka jest pusta.'
+            var info = 'Ta klatka jest pusta.';
             game.settings.gui.showTooltip(this.position, null, null, info);
         }
     }
 };
 
-Cage.prototype.click = function() {
-    // show actions
-    if(this.state.enabled) {
-        game.settings.gui.showActions(this.id, this.position, this.actions);
+Cage.prototype.updateActions = function() {
+    // update actions
+    this.actions.feed.enabled = !game.farm.foodStorage.state.empty;
+    this.actions.kill.enabled = !game.farm.slaughterhouse.state.full && this.state.ready;
+};
+
+Cage.prototype.updateAttributes = function() {
+    // decrease feed lvl
+    if(this.attributes.feed.current - this.attributes.feed.decrease <= this.attributes.feed.min) {
+        this.attributes.feed.current = this.attributes.feed.min;
+    } else {
+        this.attributes.feed.current -= this.attributes.feed.decrease
+    }
+
+    // decrease condition lvl
+    if(this.attributes.condition.current - this.attributes.condition.decrease <= this.attributes.condition.min) {
+        this.attributes.condition.current = this.attributes.condition.min;
+    } else {
+        this.attributes.condition.current -= this.attributes.condition.decrease
     }
 };
 
+Cage.prototype.click = function() {
+    // check if cage is enabled
+    if(!this.state.enabled) return false;
+
+    // show actions
+    game.settings.gui.showActions(this.id, this.position, this.actions);
+
+};
+
 Cage.prototype.createTimer = function() {
+    // check if cage is enabled
+    if(!this.state.enabled) return false;
+
     // create timer & timer event & timer loop
     this.timer.clock = game.time.create();
     this.timer.event  = this.timer.clock.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 10, this.endTimer, this);
@@ -120,23 +155,6 @@ Cage.prototype.destroyTimer = function() {
     this.timer.clock = null;
     this.timer.event = null;
     this.timer.loop = null;
-};
-
-Cage.prototype.updateAttributes = function() {
-    // decrease feed lvl
-    if(this.attributes.feed.current - this.attributes.feed.decrease <= this.attributes.feed.min) {
-        this.attributes.feed.current = this.attributes.feed.min;
-    } else {
-        this.attributes.feed.current -= this.attributes.feed.decrease
-    }
-
-    // decrease condition lvl
-    if(this.attributes.condition.current - this.attributes.condition.decrease <= this.attributes.condition.min) {
-        this.attributes.condition.current = this.attributes.condition.min;
-    } else {
-        this.attributes.condition.current -= this.attributes.condition.decrease
-    }
-
 };
 
 Cage.prototype.feed = function(o) {
@@ -190,11 +208,4 @@ Cage.prototype.debug = function() {
     game.debug.text('Cage feed: ' + this.attributes.feed.current + ' / ' + this.attributes.feed.max, 15, 150);
     game.debug.text('Cage condition: ' + this.attributes.condition.current + ' / ' + this.attributes.condition.max, 15, 175);
     game.debug.text('Cage timer: ' + game.settings.gui.formatTime(Math.round((this.timer.event.delay - this.timer.clock.ms) / 1000)), 15, 200);
-};
-
-Cage.changeActionStatus = function(action, status) {
-    for(c in Cage.all) {
-        var cage = Cage.all[c];
-        cage.actions[action].enabled = status;
-    }
 };
