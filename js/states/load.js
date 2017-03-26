@@ -26,16 +26,20 @@ var load = {
         game.load.image('clock_icon', 'img/icons/clock_icon.png');
         game.load.image('condition_icon', 'img/icons/condition_icon.png');
         game.load.image('food_icon', 'img/icons/food_icon.png');
+        game.load.image('fur_icon', 'img/icons/fur_icon.png');
         game.load.image('kill_stock_icon', 'img/icons/kill_stock_icon.png');
 
         // action icons
         game.load.image('action_feed_icon', 'img/icons/action_feed_icon.png');
         game.load.image('action_kill_icon', 'img/icons/action_kill_icon.png');
         game.load.image('action_heal_icon', 'img/icons/action_heal_icon.png');
-        game.load.image('action_buy_food', 'img/icons/action_buy_food.png');
+        game.load.image('action_buy_icon', 'img/icons/action_buy_icon.png');
+        game.load.image('action_sell_icon', 'img/icons/action_sell_icon.png');
+        game.load.image('action_waste_icon', 'img/icons/action_waste_icon.png');
     },
 
     create: function() {
+        // start create state
         game.state.start('create');
     }
 };

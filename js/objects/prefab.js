@@ -1,8 +1,8 @@
 Prefab.all = {};
 Prefab.count = 0;
 
-function Prefab(game, x, y, z, image, group) {
-    Phaser.Plugin.Isometric.IsoSprite.call(this, game, x, y, z, image, group);
+function Prefab(game, x, y, z, image, frame, group) {
+    Phaser.Plugin.Isometric.IsoSprite.call(this, game, x, y, z, image, frame, group);
 
     this.id = Prefab.count;
     this.position = {x: x, y: y, z: z};
@@ -24,10 +24,14 @@ Prefab.prototype = Object.create(Phaser.Plugin.Isometric.IsoSprite.prototype);
 Prefab.prototype.constructor = Prefab;
 
 Prefab.prototype.inputOver = function() {
+    // highlight object on hover
     this.tint = this.highlight_tint;
 };
 
 Prefab.prototype.inputOut = function() {
+    // remove highlight from object
     this.tint = this.default_tint;
+
+    // hide tooltip
     game.settings.gui.destroyTooltip();
 };

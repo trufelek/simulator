@@ -1,5 +1,5 @@
-function FoodStorage(game, x, y, z, image, group) {
-    Prefab.call(this, game, x, y, z, image, group);
+function FoodStorage(game, x, y, z, image, frame, group) {
+    Prefab.call(this, game, x, y, z, image, frame, group);
 
     this.attributes = {
         food: {
@@ -16,7 +16,7 @@ function FoodStorage(game, x, y, z, image, group) {
     this.actions = {
         buyFood: {
             label: 'Kup karmę',
-            icon: 'action_buy_food',
+            icon: 'action_buy_icon',
             position: 'top',
             enabled: true,
             callback: this.buyFood
@@ -37,10 +37,16 @@ FoodStorage.prototype.init = function() {
     // add object to game
     game.add.existing(this);
 
+    // add click event
     this.events.onInputDown.add(this.click, this);
 };
 
 FoodStorage.prototype.update = function() {
+    // update tooltip
+    this.updateTooltip();
+};
+
+FoodStorage.prototype.updateTooltip = function() {
     if(this.input.pointerOver()) {
         // show info in tooltip
         var info = 'Ilość karmy: ' + this.attributes.food.current + ' / ' + this.attributes.food.max;

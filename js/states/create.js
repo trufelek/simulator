@@ -1,16 +1,20 @@
 var create = {
     init: function() {
         console.log('Init create state...');
+        // create gui
         game.settings.gui = new GUI();
     },
 
     create: function() {
+        // create map
         this.createIsometricMap();
     },
 
     createIsometricMap: function() {
+        // set background color
         game.stage.backgroundColor = game.settings.background;
 
+        // tiles groups
         groundGroup = game.add.group();
         cageGroup = game.add.group();
         incubatorGroup = game.add.group();
@@ -20,8 +24,7 @@ var create = {
         foodStorageGroup = game.add.group();
         enviromentGroup = game.add.group();
 
-        var tile;
-
+        // images map
         var tilesArray = [];
         tilesArray[0] = 'ground';
         tilesArray[1] = 'cage';
@@ -33,40 +36,43 @@ var create = {
         tilesArray[7] = 'tree1';
         tilesArray[8] = 'tree2';
 
+        // iso map
         var tiles = [
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 2, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 2, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0,
             0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 2, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 2, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 2, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 2, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ];
 
+        // draw map
+        var tile;
         var i = 0;
 
         for(var y = game.settings.grid; y <= game.settings.height - game.settings.grid ; y += game.settings.grid) {
             for(var x = game.settings.grid; x <= game.settings.width - game.settings.grid; x += game.settings.grid) {
                 if(tiles[i] == 0) {
                     tile = game.add.isoSprite(x, y, 0, tilesArray[tiles[i]], 0, groundGroup);
-                    tile.anchor.set(0.5);
+                    tile.anchor.set(0.5, 0);
                 }
 
                 if(tiles[i] == 1) {
-                    tile = new Cage(game, x, y, 0, tilesArray[tiles[i]], true, cageGroup);
+                    tile = new Cage(game, x, y, 0, tilesArray[tiles[i]], 0, cageGroup, true);
                     tile.anchor.set(0.5);
                 }
 
@@ -81,8 +87,8 @@ var create = {
                 }
 
                 if(tiles[i] == 4) {
-                    tile = game.add.isoSprite(x, y, 0, tilesArray[tiles[i]], 0, storeGroup);
-                    tile.anchor.set(0.5);
+                    game.farm.storage = new Storage(game, x, y, 0, tilesArray[tiles[i]], 0, storeGroup);
+                    game.farm.storage.anchor.set(0.5);
                 }
 
                 if(tiles[i] == 5) {
@@ -104,6 +110,7 @@ var create = {
             }
         }
 
+        // depth sorting of groups
         game.iso.topologicalSort(groundGroup);
         game.iso.topologicalSort(cageGroup);
         game.iso.topologicalSort(slaughterhouseGroup);
@@ -114,10 +121,12 @@ var create = {
     },
 
     update: function() {
+        // update camera
         this.updateCamera();
     },
 
     updateCamera: function() {
+        // control camera with pointer
         if (game.input.mousePointer.x < game.settings.camera.zone) {
             game.camera.x -= game.settings.camera.velocity;
         }
@@ -136,6 +145,7 @@ var create = {
     },
 
     render: function() {
+        // debug game info
         game.debug.inputInfo(15, 25);
         game.debug.cameraInfo(game.camera, 15, window.innerHeight - 100);
     }

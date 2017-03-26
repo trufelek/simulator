@@ -20,11 +20,9 @@ function GUI() {
     };
 
     this.padding = 30;
-
     this.tooltip = null;
     this.content = null;
     this.actions = null;
-
     this.state = 'idle';
 }
 
@@ -43,6 +41,7 @@ GUI.prototype.createTooltip = function(position) {
     // add tooltip content container
     this.content = this.tooltip.addChild(game.add.sprite(0, 0));
 
+    // adjust tooltip to camera view
     this.adjustTooltipToCamera();
 
 };
@@ -65,10 +64,12 @@ GUI.prototype.adjustTooltipToCamera = function() {
 };
 
 GUI.prototype.createBar = function(x, y, percentage) {
+    // create bar sprite
     var progress = this.content.addChild(game.add.sprite(x, y, 'progress_bar'));
     var bar = this.content.addChild(game.add.sprite(x, y, 'bar'));
     var tint;
 
+    // tint bar progress
     if(percentage >= 80) {
         tint = this.progress.tint.full;
     } else if(percentage < 80 && percentage >= 50) {
@@ -79,17 +80,17 @@ GUI.prototype.createBar = function(x, y, percentage) {
         tint = this.progress.tint.none;
     }
 
+    // bar progress width
     progress.width = progress.width * percentage / 100;
-
     progress.tint = tint;
 
     return bar;
 };
 
 GUI.prototype.createTimeBar = function(x, y, timer) {
+    // calculate time
     var time = {};
 
-    // calculate time
     time.all = Math.round((timer.event.delay) / 1000);
     time.left = Math.round((timer.event.delay - timer.clock.ms) / 1000)
     time.passed = time.all - time.left;
@@ -105,6 +106,7 @@ GUI.prototype.createTimeBar = function(x, y, timer) {
 };
 
 GUI.prototype.createAttributeBars = function(x, y, attrs) {
+    // for every attribute create bar
     var i = 0;
 
     for(a in attrs) {
@@ -127,32 +129,39 @@ GUI.prototype.createAttributeBars = function(x, y, attrs) {
 };
 
 GUI.prototype.displayInfo = function(x, y, info) {
+    // add info to tooltip
     this.content.addChild(game.add.text(x, y, info, this.styles));
 };
 
 GUI.prototype.showTooltip = function(position, timer, attrs, info) {
+    // if actions visible, do nto show tooltip
     if(this.state == 'actions') return false;
 
+    // destroy previous tooltip
     this.destroyTooltip();
 
+    // change state to tooltip
     this.state = 'tooltip';
 
+    // create new tooltip
     this.createTooltip(position);
 
     var x = 15;
     var y = 15;
 
-
+    // if timer, create one
     if(timer) {
         this.createTimeBar(x, y, timer);
         y += 30;
     }
 
+    // if attributes, create bars
     if(attrs) {
         this.createAttributeBars(x, y, attrs);
         y += 30 * Object.keys(attrs).length;
     }
 
+    // if info, display info
     if(info) {
         this.displayInfo(x, y, info);
     }
@@ -160,6 +169,7 @@ GUI.prototype.showTooltip = function(position, timer, attrs, info) {
 };
 
 GUI.prototype.destroyTooltip = function() {
+    // if tooltip exists, destroy it
     if(this.tooltip) {
         this.tooltip.destroy();
         this.tooltip = null;
@@ -167,9 +177,10 @@ GUI.prototype.destroyTooltip = function() {
 };
 
 GUI.prototype.showActions = function(id, position, actions) {
+    // if tooltip is visible destroy it
     this.destroyTooltip();
 
-
+    // if actions are visible, hide them, if not, create them
     if(this.state == 'actions') {
         this.destroyActions();
     } else {
@@ -179,10 +190,12 @@ GUI.prototype.showActions = function(id, position, actions) {
 };
 
 GUI.prototype.createActions = function(id, position, actions) {
+    // create action pointer and adjust its position
     this.actions = game.add.sprite(position.x, position.y, 'action_line');
     this.content = this.actions.addChild(game.add.sprite(0, 0));
     this.actions.y -= this.actions.height + 15;
 
+    // for every action, create action button
     for(a in actions) {
         var action = actions[a];
         var x = 0;
@@ -221,6 +234,7 @@ GUI.prototype.createActions = function(id, position, actions) {
         }
     }
 
+    // adjust actions to camera
     this.adjustActionsToCamera();
 };
 
@@ -230,11 +244,13 @@ GUI.prototype.adjustActionsToCamera = function() {
         this.actions.y += this.actions.height * 2;
         this.actions.scale.y *= -1;
 
+        // adjust actions content
         this.content.scale.y *= -1;
     }
 };
 
 GUI.prototype.destroyActions = function() {
+    // if actions exist, destroy them
     if(this.actions) {
         this.actions.destroy();
         this.actions = null;
@@ -243,19 +259,23 @@ GUI.prototype.destroyActions = function() {
 };
 
 GUI.prototype.actionOver = function() {
+    // scale out action button
     this.cta.scale.setTo(0.6, 0.6);
 };
 
 GUI.prototype.actionOut = function() {
+    // scale in action button
     this.cta.scale.setTo(0.5, 0.5);
 };
 
 GUI.prototype.actionDown = function() {
+    // on click call action callback
     this.action.callback(this.object);
     this.gui.destroyActions();
 };
 
 GUI.prototype.formatTime = function(s) {
+    // format time to 00:00
     var minutes = "0" + Math.floor(s / 60);
     var seconds = "0" + (s - minutes * 60);
     return minutes.substr(-2) + ":" + seconds.substr(-2);

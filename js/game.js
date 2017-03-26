@@ -14,6 +14,7 @@ game.settings = {
     gui: null
 };
 
+// game farm object
 game.farm = {};
 
 // game states
@@ -21,4 +22,5 @@ game.state.add('boot', boot);
 game.state.add('load', load);
 game.state.add('create', create);
 
+// start boot state
 game.state.start('boot');

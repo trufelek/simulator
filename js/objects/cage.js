@@ -1,8 +1,8 @@
 Cage.all = {};
 Cage.count = 0;
 
-function Cage(game, x, y, z, image, enabled, group) {
-    Prefab.call(this, game, x, y, z, image, group);
+function Cage(game, x, y, z, image, frame, group, enabled) {
+    Prefab.call(this, game, x, y, z, image, frame, group);
 
     this.attributes = {
         feed: {
@@ -23,18 +23,6 @@ function Cage(game, x, y, z, image, enabled, group) {
             decrease: 1,
             increase: 5
         }
-    };
-
-    this.state = {
-        ready: false,
-        ill: false,
-        enabled: enabled
-    };
-
-    this.timer = {
-        clock: null,
-        event: null,
-        loop: null
     };
 
     this.actions = {
@@ -59,6 +47,18 @@ function Cage(game, x, y, z, image, enabled, group) {
             enabled: false,
             callback: this.heal
         }
+    };
+
+    this.state = {
+        ready: false,
+        ill: false,
+        enabled: enabled
+    };
+
+    this.timer = {
+        clock: null,
+        event: null,
+        loop: null
     };
 
     Cage.all[Cage.count] = this;
@@ -158,6 +158,7 @@ Cage.prototype.destroyTimer = function() {
 };
 
 Cage.prototype.feed = function(o) {
+    // feed action
     var food = 0;
 
     // increase feed lvl
@@ -182,29 +183,32 @@ Cage.prototype.feed = function(o) {
 };
 
 Cage.prototype.kill = function(o) {
-    console.log('kill');
+    // kill action
     game.farm.slaughterhouse.increaseKillStack();
     o.emptyCage();
     o.destroyTimer();
 };
 
 Cage.prototype.heal = function(o) {
+    // heal action
     console.log('heal');
 };
 
 Cage.prototype.emptyCage = function() {
+    // reset current cage
     this.state.enabled = false;
     this.attributes.feed.current = this.attributes.feed.max;
     this.attributes.condition.current = this.attributes.condition.max;
 };
 
 Cage.prototype.endTimer = function() {
-    console.log('cage is ready');
+    // cage ready to kill
     this.actions.kill.enabled = true;
     this.state.ready = true;
 };
 
 Cage.prototype.debug = function() {
+    // debug cage info
     game.debug.text('Cage feed: ' + this.attributes.feed.current + ' / ' + this.attributes.feed.max, 15, 150);
     game.debug.text('Cage condition: ' + this.attributes.condition.current + ' / ' + this.attributes.condition.max, 15, 175);
     game.debug.text('Cage timer: ' + game.settings.gui.formatTime(Math.round((this.timer.event.delay - this.timer.clock.ms) / 1000)), 15, 200);

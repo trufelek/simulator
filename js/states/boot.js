@@ -19,6 +19,7 @@ var boot = {
     },
 
     create: function() {
+        // start load state
         game.state.start('load');
     }
 };
