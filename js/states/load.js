@@ -36,6 +36,8 @@ var load = {
         game.load.image('action_buy_icon', 'img/icons/action_buy_icon.png');
         game.load.image('action_sell_icon', 'img/icons/action_sell_icon.png');
         game.load.image('action_waste_icon', 'img/icons/action_waste_icon.png');
+        game.load.image('action_incubate_icon', 'img/icons/action_incubate_icon.png');
+        game.load.image('action_add_icon', 'img/icons/action_add_icon.png');
     },
 
     create: function() {

@@ -15,7 +15,14 @@ game.settings = {
 };
 
 // game farm object
-game.farm = {};
+game.farm = {
+    cages: [],
+    incubators: [],
+    slaughterhouse: null,
+    foodStorage: null,
+    storage: null,
+    office: null
+};
 
 // game states
 game.state.add('boot', boot);

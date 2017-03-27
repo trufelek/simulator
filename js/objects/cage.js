@@ -26,26 +26,37 @@ function Cage(game, x, y, z, image, frame, group, enabled) {
     };
 
     this.actions = {
-        feed: {
-            label: 'Nakarm',
-            icon: 'action_feed_icon',
-            position: 'top',
-            enabled: true,
-            callback: this.feed
+        default: {
+            feed: {
+                label: 'Nakarm',
+                icon: 'action_feed_icon',
+                position: 'top',
+                enabled: true,
+                callback: this.feed
+            },
+            kill: {
+                label: 'Zabij',
+                icon: 'action_kill_icon',
+                position: 'left',
+                enabled: false,
+                callback: this.kill
+            },
+            heal: {
+                label: 'Wylecz',
+                icon: 'action_heal_icon',
+                position: 'right',
+                enabled: false,
+                callback: this.heal
+            }
         },
-        kill: {
-            label: 'Zabij',
-            icon: 'action_kill_icon',
-            position: 'left',
-            enabled: false,
-            callback: this.kill
-        },
-        heal: {
-            label: 'Wylecz',
-            icon: 'action_heal_icon',
-            position: 'right',
-            enabled: false,
-            callback: this.heal
+        empty: {
+            add: {
+                label: 'Dodaj',
+                icon: 'action_add_icon',
+                position: 'top',
+                enabled: false,
+                callback: this.addAnimals
+            }
         }
     };
 
@@ -103,8 +114,9 @@ Cage.prototype.updateTooltip = function() {
 
 Cage.prototype.updateActions = function() {
     // update actions
-    this.actions.feed.enabled = !game.farm.foodStorage.state.empty;
-    this.actions.kill.enabled = !game.farm.slaughterhouse.state.full && this.state.ready;
+    this.actions.default.feed.enabled = !game.farm.foodStorage.state.empty;
+    this.actions.default.kill.enabled = !game.farm.slaughterhouse.state.full && this.state.ready;
+    this.actions.empty.add.enabled = Incubator.incubated.length;
 };
 
 Cage.prototype.updateAttributes = function() {
@@ -125,10 +137,13 @@ Cage.prototype.updateAttributes = function() {
 
 Cage.prototype.click = function() {
     // check if cage is enabled
-    if(!this.state.enabled) return false;
-
-    // show actions
-    game.settings.gui.showActions(this.id, this.position, this.actions);
+    if(this.state.enabled) {
+        // show enabled state actions
+        game.settings.gui.showActions(this.id, this.position, this.actions.default);
+    } else {
+        // show disabled state actions
+        game.settings.gui.showActions(this.id, this.position, this.actions.empty);
+    }
 
 };
 
@@ -179,7 +194,6 @@ Cage.prototype.feed = function(o) {
 
     // decrease food lvl in food store
     game.farm.foodStorage.consumeFood(food);
-
 };
 
 Cage.prototype.kill = function(o) {
@@ -194,6 +208,15 @@ Cage.prototype.heal = function(o) {
     console.log('heal');
 };
 
+Cage.prototype.addAnimals = function(o) {
+    // release incubator from incubated array
+    Incubator.dismissAnimals();
+
+    // enable cage & set timer
+    o.state.enabled = true;
+    o.createTimer();
+};
+
 Cage.prototype.emptyCage = function() {
     // reset current cage
     this.state.enabled = false;
@@ -203,7 +226,7 @@ Cage.prototype.emptyCage = function() {
 
 Cage.prototype.endTimer = function() {
     // cage ready to kill
-    this.actions.kill.enabled = true;
+    this.actions.default.kill.enabled = true;
     this.state.ready = true;
 };
 

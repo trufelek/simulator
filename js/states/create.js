@@ -61,7 +61,7 @@ var create = {
         ];
 
         // draw map
-        var tile;
+        var ground, cage, incubator, tile;
         var i = 0;
 
         for(var y = game.settings.grid; y <= game.settings.height - game.settings.grid ; y += game.settings.grid) {
@@ -72,13 +72,15 @@ var create = {
                 }
 
                 if(tiles[i] == 1) {
-                    tile = new Cage(game, x, y, 0, tilesArray[tiles[i]], 0, cageGroup, true);
-                    tile.anchor.set(0.5);
+                    cage = new Cage(game, x, y, 0, tilesArray[tiles[i]], 0, cageGroup, true);
+                    game.farm.cages.push(cage);
+                    cage.anchor.set(0.5);
                 }
 
                 if(tiles[i] == 2) {
-                    tile = game.add.isoSprite(x, y, 0, tilesArray[tiles[i]], 0, incubatorGroup);
-                    tile.anchor.set(0.5);
+                    incubator = new Incubator(game, x, y, 0, tilesArray[tiles[i]], 0, incubatorGroup);
+                    game.farm.incubators.push(incubator);
+                    incubator.anchor.set(0.5);
                 }
 
                 if(tiles[i] == 3) {
