@@ -8,7 +8,7 @@ function FoodStorage(game, x, y, z, image, frame, group) {
             current: 200,
             label: 'Karma',
             icon: 'food_icon',
-            decrease: 10,
+            decrease: 50,
             increase: 100
         }
     };

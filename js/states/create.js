@@ -144,11 +144,5 @@ var create = {
         if (game.input.mousePointer.y > game.height - game.settings.camera.zone) {
             game.camera.y += game.settings.camera.velocity;
         }
-    },
-
-    render: function() {
-        // debug game info
-        game.debug.inputInfo(15, 25);
-        game.debug.cameraInfo(game.camera, 15, window.innerHeight - 100);
     }
 };

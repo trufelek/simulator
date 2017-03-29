@@ -153,7 +153,7 @@ Cage.prototype.createTimer = function() {
 
     // create timer & timer event & timer loop
     this.timer.clock = game.time.create();
-    this.timer.event  = this.timer.clock.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 10, this.endTimer, this);
+    this.timer.event  = this.timer.clock.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 30, this.endTimer, this);
     this.timer.loop = game.time.events.loop(Phaser.Timer.SECOND, this.updateAttributes, this);
 
     //start timer
