@@ -19,47 +19,120 @@ function GUI() {
         enabled: '0xB3B3B3'
     };
 
-    this.padding = 30;
+    this.properities = {
+        padding: 30,
+        state: 'idle'
+    };
+
     this.tooltip = null;
+    this.line = null;
     this.content = null;
+    this.wrapper = null;
     this.actions = null;
-    this.state = 'idle';
 }
 
-GUI.prototype.createTooltip = function(position) {
+GUI.prototype.showTooltip = function(position, timer, attrs, info) {
+    // if actions visible, do nto show tooltip
+    if(this.properities.state == 'actions') return false;
+
+    // destroy previous tooltip
+    this.destroyTooltip();
+
+    // change state to tooltip
+    this.properities.state = 'tooltip';
+
+    // create new tooltip
+    this.createTooltip(position, timer, attrs, info);
+
+    // draw tooltip shapes
+    this.drawTooltip(position);
+
+    // adjust tooltip to camera view
+    this.adjustTooltipToCamera();
+};
+
+GUI.prototype.createTooltip = function(position, timer, attrs, info) {
     // creates tooltip rectangle
-    this.tooltip = game.add.sprite(position.x, position.y, 'tooltip');
+    this.tooltip = game.add.sprite(position.x, position.y);
 
     // add line from tooltip to object
-    tooltip_line = this.tooltip.addChild(game.add.sprite(0, this.tooltip.height / 2, 'tooltip_line'));
+    this.line = this.tooltip.addChild(game.add.sprite(0, this.tooltip.height / 2, 'tooltip_line'));
 
-    // set tooltip position
-    tooltip_line.x = 0 - tooltip_line.width;
-    this.tooltip.x = position.x + tooltip_line.width;
-    this.tooltip.y = position.y - this.tooltip.height - tooltip_line.height / 2;
+    // add wrapper shape
+    this.wrapper = this.tooltip.addChild(game.add.sprite(0, 0));
 
     // add tooltip content container
     this.content = this.tooltip.addChild(game.add.sprite(0, 0));
 
-    // adjust tooltip to camera view
-    this.adjustTooltipToCamera();
+    var x = 15; var y = 15;
 
+    // if timer, create one
+    if(timer) {
+        this.createTimeBar(x, y, timer);
+        y += this.properities.padding;
+    }
+
+    // if attributes, create bars
+    if(attrs) {
+        this.createAttributeBars(x, y, attrs);
+        y += this.properities.padding * Object.keys(attrs).length;
+    }
+
+    // if info, display info
+    if(info) {
+        this.displayInfo(x, y, info);
+    }
+};
+
+GUI.prototype.drawTooltip = function(position) {
+    var height = this.tooltipHeight() + 15;
+    var width = 240;
+
+    var bmd = game.add.bitmapData(width, height);
+    bmd.ctx.beginPath();
+    bmd.ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+    bmd.ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
+    bmd.ctx.lineWidth = 5;
+    bmd.ctx.rect(0, 0, width, height);
+    bmd.ctx.fill();
+    bmd.ctx.stroke();
+
+    this.wrapper.loadTexture(bmd);
+
+    // set tooltip position
+    this.line.x = - this.line.width;
+    this.tooltip.x = position.x + this.line.width;
+    this.tooltip.y = position.y - this.line.height - 30;
+};
+
+GUI.prototype.tooltipHeight = function() {
+    var children_height = 0;
+
+    this.content.children.forEach(function(item, index){
+        children_height += item.height;
+    });
+
+    if(children_height < this.properities.padding) {
+        children_height = this.properities.padding;
+    }
+
+    return children_height;
 };
 
 GUI.prototype.adjustTooltipToCamera = function() {
     // adjust tooltip to camera view x
-    if(this.tooltip.x + this.tooltip.width > game.camera.view.x + game.camera.view.width) {
-        this.tooltip.x -= this.tooltip.width / 2;
+    if(this.tooltip.x + this.wrapper.width > game.camera.view.x + game.camera.view.width) {
+        this.tooltip.x -= this.wrapper.width / 2;
         this.tooltip.scale.x *= -1;
 
         this.content.scale.x *= -1;
-        this.content.x -= this.tooltip.width;
+        this.content.x += this.wrapper.width;
     }
 
     // adjust tooltip to camera view y
     if(this.tooltip.y < game.camera.view.y) {
-        this.tooltip.y += this.tooltip.height + tooltip_line.height / 2 + 15;
-        tooltip_line.scale.y *= -1;
+        this.tooltip.y += this.wrapper.height + this.line.height / 2 + 15;
+        this.line.scale.y *= -1;
     }
 };
 
@@ -116,7 +189,7 @@ GUI.prototype.createAttributeBars = function(x, y, attrs) {
         var lvl = attr.current * 100 / attr.max;
 
         // create attr bar
-        var bar = this.createBar(x, y + (this.padding * i), lvl)
+        var bar = this.createBar(x, y + (this.properities.padding * i), lvl);
 
         // add icon
         var icon = bar.addChild(game.add.sprite(bar.width + 20, 0, attr.icon));
@@ -133,41 +206,6 @@ GUI.prototype.displayInfo = function(x, y, info) {
     this.content.addChild(game.add.text(x, y, info, this.styles));
 };
 
-GUI.prototype.showTooltip = function(position, timer, attrs, info) {
-    // if actions visible, do nto show tooltip
-    if(this.state == 'actions') return false;
-
-    // destroy previous tooltip
-    this.destroyTooltip();
-
-    // change state to tooltip
-    this.state = 'tooltip';
-
-    // create new tooltip
-    this.createTooltip(position);
-
-    var x = 15;
-    var y = 15;
-
-    // if timer, create one
-    if(timer) {
-        this.createTimeBar(x, y, timer);
-        y += 30;
-    }
-
-    // if attributes, create bars
-    if(attrs) {
-        this.createAttributeBars(x, y, attrs);
-        y += 30 * Object.keys(attrs).length;
-    }
-
-    // if info, display info
-    if(info) {
-        this.displayInfo(x, y, info);
-    }
-
-};
-
 GUI.prototype.destroyTooltip = function() {
     // if tooltip exists, destroy it
     if(this.tooltip) {
@@ -181,10 +219,10 @@ GUI.prototype.showActions = function(id, position, actions) {
     this.destroyTooltip();
 
     // if actions are visible, hide them, if not, create them
-    if(this.state == 'actions') {
+    if(this.properities.state == 'actions') {
         this.destroyActions();
     } else {
-        this.state = 'actions';
+        this.properities.state = 'actions';
         this.createActions(id, position, actions);
     }
 };
@@ -254,7 +292,7 @@ GUI.prototype.destroyActions = function() {
     if(this.actions) {
         this.actions.destroy();
         this.actions = null;
-        this.state = 'idle';
+        this.properities.state = 'idle';
     }
 };
 

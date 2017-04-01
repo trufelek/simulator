@@ -20,6 +20,12 @@ function Incubator(game, x, y, z, image, frame, group) {
         event: null
     };
 
+    this.stats = {
+      incubated: 0
+    };
+
+    this.increase = 25;
+
     Incubator.all[Incubator.count] = this;
     Incubator.count ++;
 
@@ -48,7 +54,8 @@ Incubator.prototype.update = function() {
 Incubator.prototype.updateTooltip = function() {
     // show info in tooltip on hover
     if(this.input.pointerOver()) {
-        game.settings.gui.showTooltip(this.position, this.timer, null, null);
+        var info = 'Ilość wyhodowanych zwierząt: ' + this.stats.incubated;
+        game.settings.gui.showTooltip(this.position, this.timer, null, info);
     }
 };
 
@@ -72,6 +79,7 @@ Incubator.prototype.incubate = function(o) {
 };
 
 Incubator.prototype.endTimer = function() {
+    this.stats.incubated += this.increase;
     Incubator.incubated.push(this);
 };
 

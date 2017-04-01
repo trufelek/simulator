@@ -16,7 +16,6 @@ var load = {
         game.load.image('tree2', 'img/tree2.png');
 
         // gui elements
-        game.load.image('tooltip', 'img/gui/tooltip.png');
         game.load.image('tooltip_line', 'img/gui/line.png');
         game.load.image('action_line', 'img/gui/line2.png');
         game.load.image('bar', 'img/gui/bar.png');
