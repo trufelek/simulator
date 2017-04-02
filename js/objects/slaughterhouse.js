@@ -18,7 +18,8 @@ function Slaughterhouse(game, x, y, z, image, frame, group) {
             icon: 'action_kill_icon',
             position: 'top',
             enabled: false,
-            callback: this.kill
+            callback: this.kill,
+            cost: 10000
         }
     };
 
@@ -125,6 +126,9 @@ Slaughterhouse.prototype.increaseKillStack = function() {
 Slaughterhouse.prototype.kill = function(o) {
     // start killing clock
     o.timer.clock.start();
+
+    // decrease owner cash
+    game.farm.owner.cash -= o.actions.kill.cost;
 
     // disable kill action
     o.actions.kill.enabled = false;

@@ -12,7 +12,7 @@ function Cage(game, x, y, z, image, frame, group, enabled) {
             label: 'Poziom nakarmienia',
             icon: 'food_icon',
             decrease: 2,
-            increase: 25
+            increase: 100
         },
         condition: {
             max: 100,
@@ -46,7 +46,8 @@ function Cage(game, x, y, z, image, frame, group, enabled) {
                 icon: 'action_heal_icon',
                 position: 'right',
                 enabled: false,
-                callback: this.heal
+                callback: this.heal,
+                cost: 1000
             }
         },
         empty: {

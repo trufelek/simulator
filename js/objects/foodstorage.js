@@ -19,7 +19,8 @@ function FoodStorage(game, x, y, z, image, frame, group) {
             icon: 'action_buy_icon',
             position: 'top',
             enabled: true,
-            callback: this.buyFood
+            callback: this.buyFood,
+            cost: 100
         }
     };
 
@@ -62,14 +63,19 @@ FoodStorage.prototype.click = function() {
 FoodStorage.prototype.buyFood = function(o) {
     // increase food lvl in a store
     if(o.attributes.food.current + o.attributes.food.increase >= o.attributes.food.max) {
+        // decrease owner cash
+        game.farm.owner.cash -= (o.attributes.food.max - o.attributes.food.current) * o.actions.buyFood.cost;
+
         o.attributes.food.current = o.attributes.food.max;
         o.actions.buyFood.enabled = false;
     } else {
+        // decrease owner cash
+        game.farm.owner.cash -= o.attributes.food.increase * o.actions.buyFood.cost;
+
         o.attributes.food.current += o.attributes.food.increase;
     }
 
     o.state.empty = false;
-
 };
 
 FoodStorage.prototype.consumeFood = function(food) {

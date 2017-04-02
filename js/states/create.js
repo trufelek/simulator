@@ -1,13 +1,17 @@
 var create = {
     init: function() {
         console.log('Init create state...');
-        // create gui
-        game.settings.gui = new GUI();
     },
 
     create: function() {
         // create map
         this.createIsometricMap();
+
+        // create gui
+        game.settings.gui = new GUI();
+
+        // create owner
+        game.farm.owner = new Owner();
     },
 
     createIsometricMap: function() {
@@ -125,6 +129,9 @@ var create = {
     update: function() {
         // update camera
         this.updateCamera();
+
+        //update interface
+        game.settings.gui.updateInterface();
     },
 
     updateCamera: function() {

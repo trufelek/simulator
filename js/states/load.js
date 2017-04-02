@@ -20,6 +20,8 @@ var load = {
         game.load.image('action_line', 'img/gui/line2.png');
         game.load.image('bar', 'img/gui/bar.png');
         game.load.image('progress_bar', 'img/gui/progress.png');
+        game.load.image('wallet', 'img/gui/wallet.png');
+        game.load.image('timer', 'img/gui/timer.png');
 
         // attributes icons
         game.load.image('clock_icon', 'img/icons/clock_icon.png');

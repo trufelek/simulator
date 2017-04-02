@@ -5,18 +5,25 @@ function GUI() {
         wordWrap: false,
         align: 'left'
     };
+    this.interfaceStyles = {
+        font: '21px Arial',
+        fill: '#f0f0f0',
+        wordWrap: false,
+        align: 'left'
+    };
 
     this.progress = {
         tint: {
-            full: '0x669933',
-            almost: '0xFFEE00',
-            little: '0xFF9933',
-            none: '0xD62B2B'
+            full: '0x97d143',
+            almost: '0xfff855',
+            little: '0xffab55',
+            none: '0xff5855'
         }
     };
 
     this.tint = {
-        enabled: '0xB3B3B3'
+        enabled: '0xB3B3B3',
+        debt: '0xff5855'
     };
 
     this.properities = {
@@ -29,7 +36,46 @@ function GUI() {
     this.content = null;
     this.wrapper = null;
     this.actions = null;
+
+    this.timer = null;
+    this.cash = null;
+
+    this.createInterface();
 }
+
+GUI.prototype.createInterface = function() {
+    var interface = game.add.group();
+    var wallet = game.add.sprite(25, 15, 'wallet');
+    wallet.width = 50;
+    wallet.height = 50;
+    wallet.fixedToCamera = true;
+
+    this.cash = game.add.text(85, 35, '0 zł', this.interfaceStyles);
+
+    var clock = game.add.sprite(window.innerWidth - 65, 20, 'timer');
+    clock.width = 40;
+    clock.height = 40;
+    clock.fixedToCamera = true;
+
+    this.timer = game.add.text(window.innerWidth - clock.width - 90, 35, '00:00', this.interfaceStyles);
+
+    interface.add(this.timer, this.cash);
+    interface.add(this.cash);
+
+    interface.fixedToCamera = true;
+};
+
+
+GUI.prototype.updateInterface = function() {
+    var time = Math.round(game.time.now / 1000);
+    this.timer.setText(this.formatTime(time));
+
+    this.cash.setText(game.farm.owner.cash + ' zł');
+
+    if(game.farm.owner.cash < 0) {
+        this.cash.tint = this.tint.debt;
+    }
+};
 
 GUI.prototype.showTooltip = function(position, timer, attrs, info) {
     // if actions visible, do nto show tooltip
@@ -165,7 +211,7 @@ GUI.prototype.createTimeBar = function(x, y, timer) {
     var time = {};
 
     time.all = Math.round((timer.event.delay) / 1000);
-    time.left = Math.round((timer.event.delay - timer.clock.ms) / 1000)
+    time.left = Math.round((timer.event.delay - timer.clock.ms) / 1000);
     time.passed = time.all - time.left;
 
     // timer bar progress

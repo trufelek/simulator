@@ -24,14 +24,16 @@ function Storage(game, x, y, z, image, frame, group) {
             icon: 'action_sell_icon',
             position: 'top',
             enabled: false,
-            callback: this.sell
+            callback: this.sell,
+            price: 10000
         },
         utilization: {
             label: 'Utylizacja',
             icon: 'action_waste_icon',
             position: 'left',
             enabled: false,
-            callback: this.utilize
+            callback: this.utilize,
+            cost: 10000
         }
     };
 
@@ -123,6 +125,9 @@ Storage.prototype.sell = function(o) {
     // disable action sell
     o.actions.sell.enabled = false;
 
+    // decrease owner cash
+    game.farm.owner.cash += o.actions.sell.price;
+
     // change state to empty
     if(o.attributes.fur.current ==  o.attributes.fur.min && o.attributes.carcass.current == o.attributes.carcass.min) {
         o.state.full = false;
@@ -138,6 +143,9 @@ Storage.prototype.utilize = function(o) {
 
     // disable action utilize
     o.actions.utilization.enabled = false;
+
+    // decrease owner cash
+    game.farm.owner.cash -= o.actions.utilization.cost;
 
     // change state to empty
     if(o.attributes.fur.current ==  o.attributes.fur.min && o.attributes.carcass.current == o.attributes.carcass.min) {

@@ -21,7 +21,8 @@ game.farm = {
     slaughterhouse: null,
     foodStorage: null,
     storage: null,
-    office: null
+    office: null,
+    owner: null
 };
 
 // game states

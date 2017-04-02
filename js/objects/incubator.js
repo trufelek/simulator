@@ -11,9 +11,10 @@ function Incubator(game, x, y, z, image, frame, group) {
             icon: 'action_incubate_icon',
             position: 'top',
             enabled: true,
-            callback: this.incubate
+            callback: this.incubate,
+            cost: 1000
         }
-    }
+    };
 
     this.timer = {
         clock: null,
@@ -73,6 +74,9 @@ Incubator.prototype.createTimer = function() {
 Incubator.prototype.incubate = function(o) {
     // disable incubate action
     o.actions.incubate.enabled = false;
+
+    // decrease owner cash
+    game.farm.owner.cash -= o.actions.incubate.cost;
 
     //start timer
     o.timer.clock.start();
