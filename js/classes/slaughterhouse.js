@@ -86,18 +86,18 @@ Slaughterhouse.prototype.updateTooltip = function() {
         // show info in tooltip
         var info = 'Ilość zwierząt do ubicia: ' + this.attributes.stack.current + ' / ' + this.attributes.stack.max + '\n';
         info += 'Suma zabitych zwierząt: ' + this.stats.killed;
-        game.settings.gui.showTooltip(this.position, this.timer, this.attributes, info);
+        simulator.gui.showTooltip(this.position, this.timer, this.attributes, info);
     }
 };
 
 Slaughterhouse.prototype.updateActions = function() {
     // update actions
-    this.actions.kill.enabled = !game.farm.storage.state.full && this.state.full;
+    this.actions.kill.enabled = !simulator.farm.storage.state.full && this.state.full;
 };
 
 Slaughterhouse.prototype.click = function() {
     // show actions
-    game.settings.gui.showActions(this.id, this.position, this.actions);
+    simulator.gui.showActions(this.id, this.position, this.actions);
 };
 
 Slaughterhouse.prototype.endTimer = function() {
@@ -105,7 +105,7 @@ Slaughterhouse.prototype.endTimer = function() {
     this.stats.killed += this.attributes.stack.current;
 
     // stack carcass & furs in storage
-    game.farm.storage.stack(this.attributes.stack.current);
+    simulator.farm.storage.stack(this.attributes.stack.current);
 
     // reset slaughterhouse stack & timer
     this.attributes.stack.current = 0;
@@ -128,7 +128,7 @@ Slaughterhouse.prototype.kill = function(o) {
     o.timer.clock.start();
 
     // decrease owner cash
-    game.farm.owner.cash -= o.actions.kill.cost;
+    simulator.farm.owner.cash -= o.actions.kill.cost;
 
     // disable kill action
     o.actions.kill.enabled = false;

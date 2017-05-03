@@ -1,23 +1,14 @@
 // create game object
-var game = new Phaser.Game('100%', '100%', Phaser.AUTO, 'game');
+var game = new Phaser.Game('100%', '100%', Phaser.CANVAS, 'game');
 
-// game settings
-game.settings = {
-    background: '#669933',
-    height: 700,
-    width: 700,
-    grid: 32,
-    camera: {
-        zone: 100,
-        velocity: 4
-    },
-    gui: null
-};
+// simulator object
+var simulator = {};
 
 // game farm object
-game.farm = {
+simulator.farm = {
     cages: [],
     incubators: [],
+    pavilions: [],
     slaughterhouse: null,
     foodStorage: null,
     storage: null,

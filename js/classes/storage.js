@@ -70,13 +70,13 @@ Storage.prototype.updateTooltip = function() {
         // show info in tooltip
         var info = 'Ilość sprzedanych futer: ' + this.stats.fur + '\n';
         info += 'Całkowita ilość odpadów: ' + this.stats.carcass;
-        game.settings.gui.showTooltip(this.position, null, this.attributes, info);
+        simulator.gui.showTooltip(this.position, null, this.attributes, info);
     }
 };
 
 Storage.prototype.click = function() {
     // show actions
-    game.settings.gui.showActions(this.id, this.position, this.actions);
+    simulator.gui.showActions(this.id, this.position, this.actions);
 };
 
 Storage.prototype.stack = function(stack) {
@@ -126,7 +126,7 @@ Storage.prototype.sell = function(o) {
     o.actions.sell.enabled = false;
 
     // decrease owner cash
-    game.farm.owner.cash += o.actions.sell.price;
+    simulator.farm.owner.cash += o.actions.sell.price;
 
     // change state to empty
     if(o.attributes.fur.current ==  o.attributes.fur.min && o.attributes.carcass.current == o.attributes.carcass.min) {
@@ -145,7 +145,7 @@ Storage.prototype.utilize = function(o) {
     o.actions.utilization.enabled = false;
 
     // decrease owner cash
-    game.farm.owner.cash -= o.actions.utilization.cost;
+    simulator.farm.owner.cash -= o.actions.utilization.cost;
 
     // change state to empty
     if(o.attributes.fur.current ==  o.attributes.fur.min && o.attributes.carcass.current == o.attributes.carcass.min) {

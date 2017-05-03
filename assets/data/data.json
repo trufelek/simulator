@@ -1,0 +1,58 @@
+{
+  "settings" : {
+    "background": "#d1d1d1",
+    "height": 650,
+    "width": 2000,
+    "grid": 25,
+    "tile": {
+        "height": 25,
+        "width": 50
+    },
+    "camera": {
+        "zone": 100,
+        "velocity": 10
+    },
+    "farm" : {
+        "pavilions" : {
+            "max" : 12,
+            "min" : 0,
+            "optimum": 8
+        }
+    }
+  },
+  "assets" : {
+    "ground": { "type": "image", "path": "assets/img/ground.png" },
+    "cage_empty": { "type": "image", "path": "assets/img/cage_empty.png" },
+    "cage_full": { "type": "image", "path": "assets/img/cage_full.png" },
+    "cage_double_full": { "type": "image", "path": "assets/img/cage_double_full.png" },
+    "cage_double_empty": { "type": "image", "path": "assets/img/cage_double_empty.png" },
+    "incubator": { "type": "image", "path": "assets/img/incubator.png" },
+    "food_storage": { "type": "image", "path": "assets/img/foodstorage.png" },
+    "storage": { "type": "image", "path": "assets/img/storage.png" },
+    "slaughterhouse": { "type": "image", "path": "assets/img/slaughterhouse.png" },
+    "pavilion_front": { "type": "image", "path": "assets/img/pavilion.png" },
+    "pavilion_back": { "type": "image", "path": "assets/img/pavilion_back.png" },
+
+    "tooltip_line": { "type": "image", "path": "assets/img/gui/line.png" },
+    "action_line": { "type": "image", "path": "assets/img/gui/line2.png" },
+    "bar": { "type": "image", "path": "assets/img/gui/bar.png" },
+    "progress_bar": { "type": "image", "path": "assets/img/gui/progress.png" },
+    "wallet": { "type": "image", "path": "assets/img/gui/wallet.png" },
+    "timer": { "type": "image", "path": "assets/img/gui/timer.png" },
+
+    "clock_icon": { "type": "image", "path": "assets/img/icons/clock_icon.png" },
+    "condition_icon": { "type": "image", "path": "assets/img/icons/condition_icon.png" },
+    "food_icon": { "type": "image", "path": "assets/img/icons/food_icon.png" },
+    "fur_icon": { "type": "image", "path": "assets/img/icons/fur_icon.png" },
+    "kill_stock_icon": { "type": "image", "path": "assets/img/icons/kill_stock_icon.png" },
+
+    "action_feed_icon": { "type": "image", "path": "assets/img/icons/action_feed_icon.png" },
+    "action_kill_icon": { "type": "image", "path": "assets/img/icons/action_kill_icon.png" },
+    "action_heal_icon": { "type": "image", "path": "assets/img/icons/action_heal_icon.png" },
+    "action_buy_icon": { "type": "image", "path": "assets/img/icons/action_buy_icon.png" },
+    "action_sell_icon": { "type": "image", "path": "assets/img/icons/action_sell_icon.png" },
+    "action_waste_icon": { "type": "image", "path": "assets/img/icons/action_waste_icon.png" },
+    "action_incubate_icon": { "type": "image", "path": "assets/img/icons/action_incubate_icon.png" },
+    "action_add_icon": { "type": "image", "path": "assets/img/icons/action_add_icon.png" }
+  }
+}

@@ -1,17 +1,18 @@
 Prefab.all = {};
 Prefab.count = 0;
 
-function Prefab(game, x, y, z, image, frame, group) {
-    Phaser.Plugin.Isometric.IsoSprite.call(this, game, x, y, z, image, frame, group);
+function Prefab(game, x, y, image, frame, group) {
+    Phaser.Sprite.call(this, game, x, y, image, frame, group);
 
     this.id = Prefab.count;
-    this.position = {x: x, y: y, z: z};
+    this.position = {x: x, y: y};
     this.image = image;
     this.highlight_tint = '0xfff401';
     this.default_tint = '0xffffff';
 
     this.inputEnabled = true;
     this.input.useHandCursor = true;
+    this.input.pixelPerfectOver = true;
 
     this.events.onInputOver.add(this.inputOver, this);
     this.events.onInputOut.add(this.inputOut, this);
@@ -33,5 +34,5 @@ Prefab.prototype.inputOut = function() {
     this.tint = this.default_tint;
 
     // hide tooltip
-    game.settings.gui.destroyTooltip();
+    simulator.gui.destroyTooltip();
 };

@@ -4,41 +4,18 @@ var load = {
     },
 
     preload: function() {
-        //map elements
-        game.load.image('ground', 'img/grid.png');
-        game.load.image('cage', 'img/cage.png');
-        game.load.image('incubator', 'img/incubator.png');
-        game.load.image('office', 'img/office.png');
-        game.load.image('foodstorage', 'img/foodstorage.png');
-        game.load.image('storage', 'img/storage.png');
-        game.load.image('slaughterhouse', 'img/slaughterhouse.png');
-        game.load.image('tree1', 'img/tree1.png');
-        game.load.image('tree2', 'img/tree2.png');
+        //load assets
+        for(var asset_key in simulator.assets) {
+            if(simulator.assets.hasOwnProperty(asset_key)) {
+                var asset = simulator.assets[asset_key];
 
-        // gui elements
-        game.load.image('tooltip_line', 'img/gui/line.png');
-        game.load.image('action_line', 'img/gui/line2.png');
-        game.load.image('bar', 'img/gui/bar.png');
-        game.load.image('progress_bar', 'img/gui/progress.png');
-        game.load.image('wallet', 'img/gui/wallet.png');
-        game.load.image('timer', 'img/gui/timer.png');
-
-        // attributes icons
-        game.load.image('clock_icon', 'img/icons/clock_icon.png');
-        game.load.image('condition_icon', 'img/icons/condition_icon.png');
-        game.load.image('food_icon', 'img/icons/food_icon.png');
-        game.load.image('fur_icon', 'img/icons/fur_icon.png');
-        game.load.image('kill_stock_icon', 'img/icons/kill_stock_icon.png');
-
-        // action icons
-        game.load.image('action_feed_icon', 'img/icons/action_feed_icon.png');
-        game.load.image('action_kill_icon', 'img/icons/action_kill_icon.png');
-        game.load.image('action_heal_icon', 'img/icons/action_heal_icon.png');
-        game.load.image('action_buy_icon', 'img/icons/action_buy_icon.png');
-        game.load.image('action_sell_icon', 'img/icons/action_sell_icon.png');
-        game.load.image('action_waste_icon', 'img/icons/action_waste_icon.png');
-        game.load.image('action_incubate_icon', 'img/icons/action_incubate_icon.png');
-        game.load.image('action_add_icon', 'img/icons/action_add_icon.png');
+                switch(asset.type) {
+                    case 'image':
+                        game.load.image(asset_key, asset.path);
+                    break;
+                }
+            }
+        }
     },
 
     create: function() {

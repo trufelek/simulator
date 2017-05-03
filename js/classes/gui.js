@@ -6,8 +6,8 @@ function GUI() {
         align: 'left'
     };
     this.interfaceStyles = {
-        font: '21px Arial',
-        fill: '#f0f0f0',
+        font: 'bold 24px Arial',
+        fill: '#F5F5F5',
         wordWrap: false,
         align: 'left'
     };
@@ -45,23 +45,27 @@ function GUI() {
 
 GUI.prototype.createInterface = function() {
     var interface = game.add.group();
-    var wallet = game.add.sprite(25, 15, 'wallet');
-    wallet.width = 50;
-    wallet.height = 50;
+
+    var wallet = game.add.sprite(25, 5, 'wallet');
+    wallet.width = 45;
+    wallet.height = 45;
     wallet.fixedToCamera = true;
 
-    this.cash = game.add.text(85, 35, '0 zł', this.interfaceStyles);
+    this.cash = game.add.text(85, 15, '0 zł', this.interfaceStyles);
+    this.cash.stroke = '#000000';
+    this.cash.strokeThickness = 6;
 
-    var clock = game.add.sprite(window.innerWidth - 65, 20, 'timer');
+    var clock = game.add.sprite(window.innerWidth - 65, 10, 'timer');
     clock.width = 40;
     clock.height = 40;
     clock.fixedToCamera = true;
 
-    this.timer = game.add.text(window.innerWidth - clock.width - 90, 35, '00:00', this.interfaceStyles);
+    this.timer = game.add.text(window.innerWidth - clock.width - 100, 15, '00:00', this.interfaceStyles);
+    this.timer.stroke = '#000000';
+    this.timer.strokeThickness = 6;
 
     interface.add(this.timer, this.cash);
     interface.add(this.cash);
-
     interface.fixedToCamera = true;
 };
 
@@ -70,9 +74,9 @@ GUI.prototype.updateInterface = function() {
     var time = Math.round(game.time.now / 1000);
     this.timer.setText(this.formatTime(time));
 
-    this.cash.setText(game.farm.owner.cash + ' zł');
+    this.cash.setText(simulator.farm.owner.cash + ' zł');
 
-    if(game.farm.owner.cash < 0) {
+    if(simulator.farm.owner.cash < 0) {
         this.cash.tint = this.tint.debt;
     }
 };

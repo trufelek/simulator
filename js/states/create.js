@@ -4,20 +4,23 @@ var create = {
     },
 
     create: function() {
+        // set background color
+        game.stage.backgroundColor = simulator.settings.background;
+
+        // set world bounds
+        game.world.setBounds(0, 0, simulator.settings.width, window.innerHeight);
+
         // create map
-        this.createIsometricMap();
+        this.createZigZagMap();
 
         // create gui
-        game.settings.gui = new GUI();
+        simulator.gui = new GUI();
 
         // create owner
-        game.farm.owner = new Owner();
+        simulator.farm.owner = new Owner();
     },
 
-    createIsometricMap: function() {
-        // set background color
-        game.stage.backgroundColor = game.settings.background;
-
+    createDiamondMap: function() {
         // tiles groups
         groundGroup = game.add.group();
         cageGroup = game.add.group();
@@ -68,8 +71,8 @@ var create = {
         var ground, cage, incubator, tile;
         var i = 0;
 
-        for(var y = game.settings.grid; y <= game.settings.height - game.settings.grid ; y += game.settings.grid) {
-            for(var x = game.settings.grid; x <= game.settings.width - game.settings.grid; x += game.settings.grid) {
+        for(var y = simulator.settings.grid; y <= simulator.settings.height - simulator.settings.grid ; y += simulator.settings.grid) {
+            for(var x = simulator.settings.grid; x <= simulator.settings.width - simulator.settings.grid; x += simulator.settings.grid) {
                 if(tiles[i] == 0) {
                     tile = game.add.isoSprite(x, y, 0, tilesArray[tiles[i]], 0, groundGroup);
                     tile.anchor.set(0.5, 0);
@@ -77,24 +80,24 @@ var create = {
 
                 if(tiles[i] == 1) {
                     cage = new Cage(game, x, y, 0, tilesArray[tiles[i]], 0, cageGroup, true);
-                    game.farm.cages.push(cage);
+                    simulator.farm.cages.push(cage);
                     cage.anchor.set(0.5);
                 }
 
                 if(tiles[i] == 2) {
                     incubator = new Incubator(game, x, y, 0, tilesArray[tiles[i]], 0, incubatorGroup);
-                    game.farm.incubators.push(incubator);
+                    simulator.farm.incubators.push(incubator);
                     incubator.anchor.set(0.5);
                 }
 
                 if(tiles[i] == 3) {
-                    game.farm.slaughterhouse = new Slaughterhouse(game, x, y, 0, tilesArray[tiles[i]], 0, slaughterhouseGroup);
-                    game.farm.slaughterhouse.anchor.set(0.5);
+                    simulator.farm.slaughterhouse = new Slaughterhouse(game, x, y, 0, tilesArray[tiles[i]], 0, slaughterhouseGroup);
+                    simulator.farm.slaughterhouse.anchor.set(0.5);
                 }
 
                 if(tiles[i] == 4) {
-                    game.farm.storage = new Storage(game, x, y, 0, tilesArray[tiles[i]], 0, storeGroup);
-                    game.farm.storage.anchor.set(0.5);
+                    simulator.farm.storage = new Storage(game, x, y, 0, tilesArray[tiles[i]], 0, storeGroup);
+                    simulator.farm.storage.anchor.set(0.5);
                 }
 
                 if(tiles[i] == 5) {
@@ -103,8 +106,8 @@ var create = {
                 }
 
                 if(tiles[i] == 6) {
-                    game.farm.foodStorage = new FoodStorage(game, x, y, 0, tilesArray[tiles[i]], 0, foodStorageGroup);
-                    game.farm.foodStorage.anchor.set(0.5);
+                    simulator.farm.foodStorage = new FoodStorage(game, x, y, 0, tilesArray[tiles[i]], 0, foodStorageGroup);
+                    simulator.farm.foodStorage.anchor.set(0.5);
                 }
 
                 if(tiles[i] == 7 || tiles[i] == 8) {
@@ -126,30 +129,93 @@ var create = {
         game.iso.topologicalSort(enviromentGroup);
     },
 
+    createZigZagMap : function() {
+        //tiles groups
+        var groundGroup = game.add.group();
+        var foodStorageGroup = game.add.group();
+        var incubatorGroup = game.add.group();
+        var pavilionGroup = game.add.group();
+        var cageGroup = game.add.group();
+
+        var tile, offset;
+
+        for(var i = 0; i < simulator.map.length ; i++) {
+            if(i % 2 == 0) {
+                offset = simulator.settings.tile.width / 2;
+            } else {
+                offset = 0;
+            }
+
+            for(var j = 0; j < simulator.map[i].length; j++) {
+                var x = (j * simulator.settings.tile.width) + offset;
+                var y = i * simulator.settings.tile.height / 2;
+                var index = simulator.map[i][j];
+
+                if(index == 0) {
+                    tile = game.add.sprite(x, y, 'ground', 0, groundGroup);
+                    tile.anchor.set(0.5, 0);
+                }
+
+                if(index == 1) {
+                    tile = new FoodStorage(game, x, y, 'food_storage', 0, foodStorageGroup);
+                    simulator.farm.foodStorage = tile;
+                    tile.anchor.set(0.5);
+                }
+
+                if(index == 2) {
+                    tile = new Incubator(game, x, y, 'incubator', 0, incubatorGroup);
+                    simulator.farm.incubators.push(tile);
+                    tile.anchor.set(0.5);
+                }
+
+                if(index >= 10 && index <= 31) {
+                    var type = index.toString().split('');
+                    var type_info = type.map(Number);
+
+                    var pavilion = type_info[0];
+                    var enabled = type_info[1];
+
+                    tile = new Cage(game, x, y, enabled ? 'cage_double_full' : 'cage_double_empty', 0, cageGroup, enabled, pavilion);
+                    simulator.farm.cages.push(tile);
+                    tile.anchor.set(0.65, 0.4);
+                }
+
+                if(index == 3) {
+                    var back = game.add.sprite(x, y, 'pavilion_back', 0, pavilionGroup);
+                    back.anchor.set(0.25, 0.91);
+
+                    tile = new Pavilion(game, x, y, 'pavilion_front', 0, pavilionGroup);
+                    simulator.farm.pavilions.push(tile);
+                    tile.anchor.set(0.25, 0.91);
+                }
+            }
+        }
+    },
+
     update: function() {
         // update camera
         this.updateCamera();
 
         //update interface
-        game.settings.gui.updateInterface();
+        simulator.gui.updateInterface();
     },
 
     updateCamera: function() {
         // control camera with pointer
-        if (game.input.mousePointer.x < game.settings.camera.zone) {
-            game.camera.x -= game.settings.camera.velocity;
+        if (game.input.mousePointer.x < simulator.settings.camera.zone) {
+            game.camera.x -= simulator.settings.camera.velocity;
         }
 
-        if (game.input.mousePointer.x > game.width - game.settings.camera.zone) {
-            game.camera.x += game.settings.camera.velocity;
+        if (game.input.mousePointer.x > game.width - simulator.settings.camera.zone) {
+            game.camera.x += simulator.settings.camera.velocity;
         }
 
-        if (game.input.mousePointer.y < game.settings.camera.zone) {
-            game.camera.y -= game.settings.camera.velocity;
+        if (game.input.mousePointer.y < simulator.settings.camera.zone) {
+            game.camera.y -= simulator.settings.camera.velocity;
         }
 
-        if (game.input.mousePointer.y > game.height - game.settings.camera.zone) {
-            game.camera.y += game.settings.camera.velocity;
+        if (game.input.mousePointer.y > game.height - simulator.settings.camera.zone) {
+            game.camera.y += simulator.settings.camera.velocity;
         }
     }
 };

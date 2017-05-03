@@ -1,5 +1,5 @@
-function FoodStorage(game, x, y, z, image, frame, group) {
-    Prefab.call(this, game, x, y, z, image, frame, group);
+function FoodStorage(game, x, y, image, frame, group) {
+    Prefab.call(this, game, x, y, image, frame, group);
 
     this.attributes = {
         food: {
@@ -51,26 +51,26 @@ FoodStorage.prototype.updateTooltip = function() {
     if(this.input.pointerOver()) {
         // show info in tooltip
         var info = 'Ilość karmy: ' + this.attributes.food.current + ' / ' + this.attributes.food.max;
-        game.settings.gui.showTooltip(this.position, null, this.attributes, info);
+        simulator.gui.showTooltip(this.position, null, this.attributes, info);
     }
 };
 
 FoodStorage.prototype.click = function() {
     // show actions
-    game.settings.gui.showActions(this.id, this.position, this.actions);
+    simulator.gui.showActions(this.id, this.position, this.actions);
 };
 
 FoodStorage.prototype.buyFood = function(o) {
     // increase food lvl in a store
     if(o.attributes.food.current + o.attributes.food.increase >= o.attributes.food.max) {
         // decrease owner cash
-        game.farm.owner.cash -= (o.attributes.food.max - o.attributes.food.current) * o.actions.buyFood.cost;
+        simulator.farm.owner.cash -= (o.attributes.food.max - o.attributes.food.current) * o.actions.buyFood.cost;
 
         o.attributes.food.current = o.attributes.food.max;
         o.actions.buyFood.enabled = false;
     } else {
         // decrease owner cash
-        game.farm.owner.cash -= o.attributes.food.increase * o.actions.buyFood.cost;
+        simulator.farm.owner.cash -= o.attributes.food.increase * o.actions.buyFood.cost;
 
         o.attributes.food.current += o.attributes.food.increase;
     }

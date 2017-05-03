@@ -2,8 +2,8 @@ Incubator.all = {};
 Incubator.count = 0;
 Incubator.incubated = [];
 
-function Incubator(game, x, y, z, image, frame, group) {
-    Prefab.call(this, game, x, y, z, image, frame, group);
+function Incubator(game, x, y, image, frame, group) {
+    Prefab.call(this, game, x, y, image, frame, group);
 
     this.actions = {
         incubate: {
@@ -56,13 +56,13 @@ Incubator.prototype.updateTooltip = function() {
     // show info in tooltip on hover
     if(this.input.pointerOver()) {
         var info = 'Ilość wyhodowanych zwierząt: ' + this.stats.incubated;
-        game.settings.gui.showTooltip(this.position, this.timer, null, info);
+        simulator.gui.showTooltip(this.position, this.timer, null, info);
     }
 };
 
 Incubator.prototype.click = function() {
     // show actions
-    game.settings.gui.showActions(this.id, this.position, this.actions);
+    simulator.gui.showActions(this.id, this.position, this.actions);
 };
 
 Incubator.prototype.createTimer = function() {
@@ -76,7 +76,7 @@ Incubator.prototype.incubate = function(o) {
     o.actions.incubate.enabled = false;
 
     // decrease owner cash
-    game.farm.owner.cash -= o.actions.incubate.cost;
+    simulator.farm.owner.cash -= o.actions.incubate.cost;
 
     //start timer
     o.timer.clock.start();
