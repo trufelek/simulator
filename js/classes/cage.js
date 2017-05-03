@@ -117,25 +117,6 @@ Cage.prototype.updateTooltip = function() {
     }
 };
 
-Cage.prototype.inputOver = function() {
-    // tint cage on hover
-    this.tint = this.highlight_tint;
-
-    // hide pavilion on hover
-    this.pavilion.alpha = 0;
-};
-
-Cage.prototype.inputOut = function() {
-    // remove highlight from object
-    this.tint = this.default_tint;
-
-    // hide tooltip
-    simulator.gui.destroyTooltip();
-
-    // show pavilion on out
-    this.pavilion.alpha = 1;
-};
-
 Cage.prototype.updateActions = function() {
     // update actions
     //this.actions.default.feed.enabled = !simulator.farm.foodStorage.state.empty;

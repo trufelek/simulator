@@ -37,12 +37,13 @@ Pavilion.prototype.init = function() {
 
 Pavilion.prototype.inputOver = function() {
     // hide on hover
-    this.alpha = 0;
+    //this.alpha = 0;
+    game.add.tween(this).to( { alpha: 0 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
 };
 
 Pavilion.prototype.inputOut = function() {
     // show on hover
-    this.alpha = 1;
+    //this.alpha = 1;
 };
 
 Pavilion.prototype.update = function() {

@@ -140,6 +140,17 @@ var create = {
         var tile, offset;
 
         var background = game.add.sprite(0, 0, 'background', 0, groundGroup);
+        background.inputEnabled = true;
+
+        background.events.onInputOver.add(function() {
+            for(var pavilion_key in simulator.farm.pavilions) {
+                if(simulator.farm.pavilions.hasOwnProperty(pavilion_key)) {
+                    if(simulator.farm.pavilions[pavilion_key].alpha == 0){
+                        game.add.tween(simulator.farm.pavilions[pavilion_key]).to( { alpha: 1 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
+                    }
+                }
+            }
+        });
 
         for(var i = 0; i < simulator.map.length ; i++) {
             if(i % 2 == 0) {
@@ -179,6 +190,7 @@ var create = {
 
                 if(index == 3) {
                     var back = game.add.sprite(x, y, 'pavilion_back', 0, pavilionGroup);
+                    back.inputEnabled = true;
                     back.anchor.set(0.25, 0.91);
 
                     tile = new Pavilion(game, x, y, 'pavilion_front', 0, pavilionGroup);
