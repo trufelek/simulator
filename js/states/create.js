@@ -8,7 +8,7 @@ var create = {
         game.stage.backgroundColor = simulator.settings.background;
 
         // set world bounds
-        game.world.setBounds(0, 0, simulator.settings.width, window.innerHeight);
+        game.world.setBounds(0, 0, simulator.settings.width, simulator.settings.height);
 
         // create map
         this.createZigZagMap();
@@ -139,6 +139,8 @@ var create = {
 
         var tile, offset;
 
+        var background = game.add.sprite(0, 0, 'background', 0, groundGroup);
+
         for(var i = 0; i < simulator.map.length ; i++) {
             if(i % 2 == 0) {
                 offset = simulator.settings.tile.width / 2;
@@ -150,11 +152,6 @@ var create = {
                 var x = (j * simulator.settings.tile.width) + offset;
                 var y = i * simulator.settings.tile.height / 2;
                 var index = simulator.map[i][j];
-
-                if(index == 0) {
-                    tile = game.add.sprite(x, y, 'ground', 0, groundGroup);
-                    tile.anchor.set(0.5, 0);
-                }
 
                 if(index == 1) {
                     tile = new FoodStorage(game, x, y, 'food_storage', 0, foodStorageGroup);
@@ -188,6 +185,11 @@ var create = {
                     simulator.farm.pavilions.push(tile);
                     tile.anchor.set(0.25, 0.91);
                 }
+
+                if(index == 4) {
+                    tile = game.add.sprite(x, y, 'box', 0);
+                    tile.anchor.set(0.5, 0);
+                }
             }
         }
     },
@@ -202,20 +204,14 @@ var create = {
 
     updateCamera: function() {
         // control camera with pointer
-        if (game.input.mousePointer.x < simulator.settings.camera.zone) {
-            game.camera.x -= simulator.settings.camera.velocity;
-        }
+        if(game.input.mousePointer.x > 0) {
+            if (game.input.mousePointer.x < simulator.settings.camera.zone) {
+                game.camera.x -= simulator.settings.camera.velocity;
+            }
 
-        if (game.input.mousePointer.x > game.width - simulator.settings.camera.zone) {
-            game.camera.x += simulator.settings.camera.velocity;
-        }
-
-        if (game.input.mousePointer.y < simulator.settings.camera.zone) {
-            game.camera.y -= simulator.settings.camera.velocity;
-        }
-
-        if (game.input.mousePointer.y > game.height - simulator.settings.camera.zone) {
-            game.camera.y += simulator.settings.camera.velocity;
+            if (game.input.mousePointer.x > game.width - simulator.settings.camera.zone) {
+                game.camera.x += simulator.settings.camera.velocity;
+            }
         }
     }
 };

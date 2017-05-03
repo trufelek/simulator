@@ -1,7 +1,7 @@
 {
   "settings" : {
     "background": "#d1d1d1",
-    "height": 650,
+    "height": 600,
     "width": 2000,
     "grid": 25,
     "tile": {
@@ -21,7 +21,9 @@
     }
   },
   "assets" : {
+    "background": { "type": "image", "path": "assets/img/background.png" },
     "ground": { "type": "image", "path": "assets/img/ground.png" },
+    "box": { "type": "image", "path": "assets/img/box.png" },
     "cage_empty": { "type": "image", "path": "assets/img/cage_empty.png" },
     "cage_full": { "type": "image", "path": "assets/img/cage_full.png" },
     "cage_double_full": { "type": "image", "path": "assets/img/cage_double_full.png" },
