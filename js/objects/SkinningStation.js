@@ -1,4 +1,4 @@
-function Slaughterhouse(game, x, y, z, image, frame, group) {
+function Skinning(game, x, y, z, image, frame, group) {
     Prefab.call(this, game, x, y, z, image, frame, group);
 
     this.attributes = {
@@ -41,66 +41,29 @@ function Slaughterhouse(game, x, y, z, image, frame, group) {
     this.init();
 }
 
-Slaughterhouse.prototype = Object.create(Prefab.prototype);
-Slaughterhouse.prototype.constructor = Slaughterhouse;
+Skinning.prototype = Object.create(Prefab.prototype);
+Skinning.prototype.constructor = Skinning;
 
-Slaughterhouse.prototype.init = function() {
+Skinning.prototype.init = function() {
     // add object to game
     game.add.existing(this);
 
-    // add click event
-    this.events.onInputDown.add(this.click, this);
-
     // create timer
-    this.createTimer();
+    this.createTimerEvent(this.timer.value.minutes, this.timer.value.seconds, true, this.endTimer);
 
 };
 
-Slaughterhouse.prototype.createTimer = function() {
-    // create timer
-    this.timer.clock = game.time.create();
-
-    //create events
-    this.timer.event = this.timer.clock.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 30, this.endTimer, this);
-};
-
-Slaughterhouse.prototype.resetTimer = function() {
-    // destroy timer
-    this.timer.clock.remove(this.timer.event);
-    this.timer.clock.destroy();
-
-    // create new timer
-    this.createTimer();
-};
-
-Slaughterhouse.prototype.update = function() {
-    // show/hide tooltip
-    this.updateTooltip();
-
+Skinning.prototype.update = function() {
     // enable/disable actions
     this.updateActions();
 };
 
-Slaughterhouse.prototype.updateTooltip = function() {
-    if(this.input.pointerOver()) {
-        // show info in tooltip
-        var info = 'Ilość zwierząt do ubicia: ' + this.attributes.stack.current + ' / ' + this.attributes.stack.max + '\n';
-        info += 'Suma zabitych zwierząt: ' + this.stats.killed;
-        simulator.gui.showTooltip(this.position, this.timer, this.attributes, info);
-    }
-};
-
-Slaughterhouse.prototype.updateActions = function() {
+Skinning.prototype.updateActions = function() {
     // update actions
     this.actions.kill.enabled = !simulator.farm.storage.state.full && this.state.full;
 };
 
-Slaughterhouse.prototype.click = function() {
-    // show actions
-    simulator.gui.showActions(this.id, this.position, this.actions);
-};
-
-Slaughterhouse.prototype.endTimer = function() {
+Skinning.prototype.endTimer = function() {
     // count killed animals
     this.stats.killed += this.attributes.stack.current;
 
@@ -113,7 +76,7 @@ Slaughterhouse.prototype.endTimer = function() {
     this.resetTimer();
 };
 
-Slaughterhouse.prototype.increaseKillStack = function() {
+Skinning.prototype.increaseKillStack = function() {
     // increase stack lvl
     if(this.attributes.stack.current + this.attributes.stack.increase >= this.attributes.stack.max) {
         this.attributes.stack.current = this.attributes.stack.max;
@@ -123,7 +86,7 @@ Slaughterhouse.prototype.increaseKillStack = function() {
     }
 };
 
-Slaughterhouse.prototype.kill = function(o) {
+Skinning.prototype.kill = function(o) {
     // start killing clock
     o.timer.clock.start();
 

@@ -1,3 +1,6 @@
+/*
+  Incubator Class
+*/
 Incubator.all = {};
 Incubator.count = 0;
 Incubator.incubated = [];
@@ -11,6 +14,7 @@ function Incubator(game, x, y, image, frame, group) {
             icon: 'action_incubate_icon',
             position: 'top',
             enabled: true,
+            visible: true,
             callback: this.incubate,
             cost: 1000
         }
@@ -18,7 +22,9 @@ function Incubator(game, x, y, image, frame, group) {
 
     this.timer = {
         clock: null,
-        event: null
+        event: null,
+        duration: { minutes: 0, seconds: 10 },
+        progress: 0
     };
 
     this.stats = {
@@ -40,35 +46,16 @@ Incubator.prototype.init = function() {
     // add object to game
     game.add.existing(this);
 
-    // add click event
-    this.events.onInputDown.add(this.click, this);
-
     // create timer
-    this.createTimer();
+    this.createTimerEvent(this.timer.duration.minutes, this.timer.duration.seconds, false, this.endIncubation);
+
+    // create stats
+    this.statsBar = new Stats(game, this.position.x, this.position.y, this, true, false);
 };
 
 Incubator.prototype.update = function() {
-    // show/hide gui
-    this.updateTooltip();
-};
-
-Incubator.prototype.updateTooltip = function() {
-    // show info in tooltip on hover
-    if(this.input.pointerOver()) {
-        var info = 'Ilość wyhodowanych zwierząt: ' + this.stats.incubated;
-        simulator.gui.showTooltip(this.position, this.timer, null, info);
-    }
-};
-
-Incubator.prototype.click = function() {
-    // show actions
-    simulator.gui.showActions(this.id, this.position, this.actions);
-};
-
-Incubator.prototype.createTimer = function() {
-    // create timer & timer event
-    this.timer.clock = game.time.create();
-    this.timer.event  = this.timer.clock.add(Phaser.Timer.MINUTE * 0 + Phaser.Timer.SECOND * 30, this.endTimer, this);
+    // update timer
+    this.updateTimer();
 };
 
 Incubator.prototype.incubate = function(o) {
@@ -82,18 +69,9 @@ Incubator.prototype.incubate = function(o) {
     o.timer.clock.start();
 };
 
-Incubator.prototype.endTimer = function() {
+Incubator.prototype.endIncubation = function() {
     this.stats.incubated += this.increase;
     Incubator.incubated.push(this);
-};
-
-Incubator.prototype.resetTimer = function() {
-    // destroy timer
-    this.timer.clock.remove(this.timer.event);
-    this.timer.clock.destroy();
-
-    // create new timer
-    this.createTimer();
 };
 
 Incubator.dismissAnimals = function() {
@@ -103,4 +81,7 @@ Incubator.dismissAnimals = function() {
     // set action incubate to enabled
     incubator.actions.incubate.enabled = true;
     incubator.resetTimer();
+
+    // create timer again
+    incubator.createTimerEvent(incubator.timer.duration.minutes, incubator.timer.duration.seconds, false, incubator.endIncubation);
 };

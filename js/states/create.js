@@ -20,115 +20,6 @@ var create = {
         simulator.farm.owner = new Owner();
     },
 
-    createDiamondMap: function() {
-        // tiles groups
-        groundGroup = game.add.group();
-        cageGroup = game.add.group();
-        incubatorGroup = game.add.group();
-        slaughterhouseGroup = game.add.group();
-        officeGroup = game.add.group();
-        storeGroup = game.add.group();
-        foodStorageGroup = game.add.group();
-        enviromentGroup = game.add.group();
-
-        // images map
-        var tilesArray = [];
-        tilesArray[0] = 'ground';
-        tilesArray[1] = 'cage';
-        tilesArray[2] = 'incubator';
-        tilesArray[3] = 'slaughterhouse';
-        tilesArray[4] = 'storage';
-        tilesArray[5] = 'office';
-        tilesArray[6] = 'foodstorage';
-        tilesArray[7] = 'tree1';
-        tilesArray[8] = 'tree2';
-
-        // iso map
-        var tiles = [
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 2, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 2, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 2, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 2, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-        ];
-
-        // draw map
-        var ground, cage, incubator, tile;
-        var i = 0;
-
-        for(var y = simulator.settings.grid; y <= simulator.settings.height - simulator.settings.grid ; y += simulator.settings.grid) {
-            for(var x = simulator.settings.grid; x <= simulator.settings.width - simulator.settings.grid; x += simulator.settings.grid) {
-                if(tiles[i] == 0) {
-                    tile = game.add.isoSprite(x, y, 0, tilesArray[tiles[i]], 0, groundGroup);
-                    tile.anchor.set(0.5, 0);
-                }
-
-                if(tiles[i] == 1) {
-                    cage = new Cage(game, x, y, 0, tilesArray[tiles[i]], 0, cageGroup, true);
-                    simulator.farm.cages.push(cage);
-                    cage.anchor.set(0.5);
-                }
-
-                if(tiles[i] == 2) {
-                    incubator = new Incubator(game, x, y, 0, tilesArray[tiles[i]], 0, incubatorGroup);
-                    simulator.farm.incubators.push(incubator);
-                    incubator.anchor.set(0.5);
-                }
-
-                if(tiles[i] == 3) {
-                    simulator.farm.slaughterhouse = new Slaughterhouse(game, x, y, 0, tilesArray[tiles[i]], 0, slaughterhouseGroup);
-                    simulator.farm.slaughterhouse.anchor.set(0.5);
-                }
-
-                if(tiles[i] == 4) {
-                    simulator.farm.storage = new Storage(game, x, y, 0, tilesArray[tiles[i]], 0, storeGroup);
-                    simulator.farm.storage.anchor.set(0.5);
-                }
-
-                if(tiles[i] == 5) {
-                    tile = game.add.isoSprite(x, y, 0, tilesArray[tiles[i]], 0, officeGroup);
-                    tile.anchor.set(0.5);
-                }
-
-                if(tiles[i] == 6) {
-                    simulator.farm.foodStorage = new FoodStorage(game, x, y, 0, tilesArray[tiles[i]], 0, foodStorageGroup);
-                    simulator.farm.foodStorage.anchor.set(0.5);
-                }
-
-                if(tiles[i] == 7 || tiles[i] == 8) {
-                    tile = game.add.isoSprite(x, y, 0, tilesArray[tiles[i]], 0, enviromentGroup);
-                    tile.anchor.set(0.5);
-                }
-
-                i++;
-            }
-        }
-
-        // depth sorting of groups
-        game.iso.topologicalSort(groundGroup);
-        game.iso.topologicalSort(cageGroup);
-        game.iso.topologicalSort(slaughterhouseGroup);
-        game.iso.topologicalSort(officeGroup);
-        game.iso.topologicalSort(storeGroup);
-        game.iso.topologicalSort(foodStorageGroup);
-        game.iso.topologicalSort(enviromentGroup);
-    },
-
     createZigZagMap : function() {
         //tiles groups
         var groundGroup = game.add.group();
@@ -136,22 +27,17 @@ var create = {
         var incubatorGroup = game.add.group();
         var pavilionGroup = game.add.group();
         var cageGroup = game.add.group();
+        var slaughterhouseGroup = game.add.group();
+        var storageGroup = game.add.group();
 
         var tile, offset;
 
+        // draw background
         var background = game.add.sprite(0, 0, 'background', 0, groundGroup);
         background.inputEnabled = true;
+        background.input.useHandCursor = true;
 
-        background.events.onInputOver.add(function() {
-            for(var pavilion_key in simulator.farm.pavilions) {
-                if(simulator.farm.pavilions.hasOwnProperty(pavilion_key)) {
-                    if(simulator.farm.pavilions[pavilion_key].alpha == 0){
-                        game.add.tween(simulator.farm.pavilions[pavilion_key]).to( { alpha: 1 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
-                    }
-                }
-            }
-        });
-
+        // draw map procedurally
         for(var i = 0; i < simulator.map.length ; i++) {
             if(i % 2 == 0) {
                 offset = simulator.settings.tile.width / 2;
@@ -189,18 +75,57 @@ var create = {
                 }
 
                 if(index == 3) {
-                    var back = game.add.sprite(x, y, 'pavilion_back', 0, pavilionGroup);
-                    back.inputEnabled = true;
-                    back.anchor.set(0.25, 0.91);
+                    var pavilion_back = game.add.sprite(x, y, 'pavilion_back', 0, pavilionGroup);
+                    pavilion_back.anchor.set(0.25, 0.91);
 
-                    tile = new Pavilion(game, x, y, 'pavilion_front', 0, pavilionGroup);
-                    simulator.farm.pavilions.push(tile);
-                    tile.anchor.set(0.25, 0.91);
+                    var pavilion_front = new Pavilion(game, x, y, 'pavilion_front', 0, pavilionGroup);
+                    simulator.farm.pavilions.push(pavilion_front);
+                    pavilion_front.anchor.set(0.25, 0.91);
                 }
 
                 if(index == 4) {
                     tile = game.add.sprite(x, y, 'box', 0);
                     tile.anchor.set(0.5, 0);
+                }
+
+                if(index == 50) {
+                    var slaughterhouse_back = game.add.sprite(x, y, 'slaughterhouse_back', 0, slaughterhouseGroup);
+                    slaughterhouse_back.anchor.set(0, 0);
+
+                }
+
+                if(index == 5) {
+                    var slaughterhouse_front = new Slaughterhouse(game, x, y, 'slaughterhouse_front', 0, slaughterhouseGroup);
+                    simulator.farm.slaughterhouse = slaughterhouse_front;
+                    slaughterhouse_front.anchor.set(1);
+                }
+
+                if(index == 6) {
+                    tile = new KillingStation(game, x, y, 'killing_robot', 0, slaughterhouseGroup);
+                    simulator.farm.killingStations.push(tile);
+                    tile.anchor.set(0.5);
+                }
+
+                if(index == 7) {
+                    tile = game.add.sprite(x, y, 'skinning_robot', 0, slaughterhouseGroup);
+                    tile.anchor.set(0.5);
+                }
+
+                if(index == 8) {
+                    var furStorage = new FurStorage(game, x, y, 'storage', 0, storageGroup);
+                    simulator.farm.furStorage = furStorage;
+                    furStorage.anchor.set(0.5);
+                }
+
+                if(index == 9) {
+                    var carcassStorage = new CarcassStorage(game, x, y, 'carcass', 0, storageGroup);
+                    simulator.farm.carcassStorage = carcassStorage;
+                    carcassStorage.anchor.set(0.5);
+                }
+
+                if(index == 81) {
+                    tile = game.add.sprite(x, y, 'furs', 0);
+                    tile.anchor.set(0.5);
                 }
             }
         }
@@ -215,15 +140,16 @@ var create = {
     },
 
     updateCamera: function() {
-        // control camera with pointer
-        if(game.input.mousePointer.x > 0) {
-            if (game.input.mousePointer.x < simulator.settings.camera.zone) {
-                game.camera.x -= simulator.settings.camera.velocity;
+        // control camera by dragging the map
+        if (game.input.activePointer.isDown) {
+            if (game.draggingPoint) {
+                // drag the camera by the amount the pointer has moved since last update
+                game.camera.x += game.draggingPoint.x - game.input.activePointer.position.x;
             }
-
-            if (game.input.mousePointer.x > game.width - simulator.settings.camera.zone) {
-                game.camera.x += simulator.settings.camera.velocity;
-            }
+            // set new drag origin to current position
+            game.draggingPoint = game.input.activePointer.position.clone();
+        } else {
+            game.draggingPoint = null;
         }
     }
 };

@@ -9,9 +9,12 @@ simulator.farm = {
     cages: [],
     incubators: [],
     pavilions: [],
+    skinningStations: [],
+    killingStations: [],
     slaughterhouse: null,
     foodStorage: null,
-    storage: null,
+    furStorage: null,
+    carcassStorage: null,
     office: null,
     owner: null
 };
