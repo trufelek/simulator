@@ -1,3 +1,6 @@
+/*
+ Owner Class
+ */
 function Owner () {
     this.cash = 100000;
 

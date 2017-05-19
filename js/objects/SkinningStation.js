@@ -69,7 +69,7 @@ SkinningStation.prototype.init = function() {
     this.createTimerEvent(this.timer.duration.minutes, this.timer.duration.seconds, false, this.endSkinning);
 
     // create timer loop
-    this.createTimerLoop(Phaser.Timer.SECOND, this.skinning, this);
+    this.createTimerLoop(500, this.skinning, this);
 
     // create stats
     this.statsBar = new Stats(game, this.position.x, this.position.y, this, true, true);

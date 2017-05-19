@@ -69,7 +69,7 @@ KillingStation.prototype.init = function() {
     this.createTimerEvent(this.timer.duration.minutes, this.timer.duration.seconds, false, this.endKilling);
 
     // create timer loop
-    this.createTimerLoop(Phaser.Timer.SECOND, this.updateKillingStation, this);
+    this.createTimerLoop(500, this.updateKillingStation, this);
 
     // create stats
     this.statsBar = new Stats(game, this.position.x, this.position.y, this, true, true);

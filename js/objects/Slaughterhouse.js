@@ -53,7 +53,7 @@ Slaughterhouse.prototype.updateSlaughterhouse = function() {
 
 Slaughterhouse.prototype.hideSlaughterhouse = function() {
     // hide on hover
-    game.add.tween(this).to({alpha: 0}, 100, Phaser.Easing.Linear.None, true, 0, 0, false);
+    game.add.tween(this).to({alpha: 0}, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
     this.hidden = true;
 
     this.showChildrenStats();
@@ -68,7 +68,7 @@ Slaughterhouse.prototype.showChildrenStats = function() {
 };
 
 Slaughterhouse.prototype.showSlaughterhouse = function() {
-    game.add.tween(this).to({alpha: 1}, 100, Phaser.Easing.Linear.None, true, 0, 0, false);
+    game.add.tween(this).to({alpha: 1}, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
     this.hidden = false;
 
     this.hideChildrenStats();

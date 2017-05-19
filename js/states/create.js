@@ -13,6 +13,10 @@ var create = {
         // create map
         this.createZigZagMap();
 
+        window.addEventListener('resize', function() {
+            console.log(game.scale.width, game.scale.height);
+        });
+
         // create gui
         simulator.gui = new GUI();
 

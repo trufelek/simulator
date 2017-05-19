@@ -15,8 +15,8 @@ function Cage(game, x, y, image, frame, group, enabled, pavilion) {
             label: 'Stan zwierząt',
             icon: 'condition_icon',
             min_decrease: 0.5,
-            hungry_decrease: 2,
-            full_decrease: 5
+            hungry_decrease: 1,
+            crowded_decrease: 3
         }
     };
 
@@ -87,7 +87,7 @@ Cage.prototype.init = function() {
     }
 
     // create timer loop
-    this.createTimerLoop(Phaser.Timer.SECOND, this.updateCage, this);
+    this.createTimerLoop(500, this.updateCage, this);
 
     // create stats
     this.statsBar = new Stats(game, this.position.x, this.position.y, this, true, true);
@@ -116,7 +116,16 @@ Cage.prototype.updateActions = function() {
 
 Cage.prototype.updateAttributes = function() {
     // if there is no food decrease condition faster
-    var decrease = simulator.farm.foodStorage.state.empty ? this.attributes.condition.hungry_decrease : this.attributes.condition.min_decrease;
+    var decrease = this.attributes.condition.min_decrease;
+
+    if(simulator.farm.foodStorage.state.empty) {
+        decrease += this.attributes.condition.hungry_decrease;
+    }
+
+    if(this.pavilion.fullCages.length > 8) {
+        decrease += this.attributes.condition.crowded_decrease;
+    }
+
 
     // decrease condition lvl
     if(this.attributes.condition.current - decrease <= this.attributes.condition.min) {
@@ -155,9 +164,12 @@ Cage.prototype.addAnimals = function(cage) {
     // set attributes to max
     cage.attributes.condition.current = cage.attributes.condition.max;
 
-    //update actions
+    // update actions
     cage.actions.add.visible = false;
     cage.actions.kill.visible = true;
+
+    // add cage to pavilion full cages
+    cage.pavilion.fullCages.push(cage);
 
     // create timer
     cage.createTimerEvent(cage.timer.duration.minutes, cage.timer.duration.seconds, true, cage.cageReady);
@@ -179,6 +191,11 @@ Cage.prototype.emptyCage = function() {
     //update actions
     this.actions.add.visible = true;
     this.actions.kill.visible = false;
+
+    // remove cage from pavilion full cages
+    if(this.pavilion.fullCages.indexOf(this) > -1) {
+        this.pavilion.fullCages.splice(this.pavilion.fullCages.indexOf(this), 1);
+    }
 };
 
 Cage.prototype.cageReady = function() {

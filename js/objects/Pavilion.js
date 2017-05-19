@@ -19,6 +19,8 @@ function Pavilion(game, x, y, image, frame, group) {
         loops: []
     };
 
+    this.fullCages = [];
+
     this.init();
 
     Pavilion.all[this.pavilionId] = this;
@@ -39,6 +41,10 @@ Pavilion.prototype.init = function() {
             if(cage.pavilionId == this.pavilionId) {
                 cage.pavilion = this;
                 this.cages.push(cage);
+
+                if(cage.state.enabled) {
+                    this.fullCages.push(cage);
+                }
             }
         }
     }
