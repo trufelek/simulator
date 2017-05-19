@@ -20,8 +20,15 @@ function Stats(game, x, y, obj, timer, attrs) {
             full: '0x97d143',
             almost: '0xfff855',
             little: '0xffab55',
-            none: '0xff5855'
+            none: '0xff5855',
+            timer: '0xff8080'
         }
+    };
+
+    this.timer = {
+        clock: null,
+        event: null,
+        loops: []
     };
 
     this.init();
@@ -33,6 +40,9 @@ Stats.prototype.constructor = Stats;
 Stats.prototype.init = function() {
     // add object to game
     game.add.existing(this);
+
+    // create timer loop
+    game.time.events.loop(60, this.updateStats, this);
 
     // draw stats bars
     this.drawStatsBars();
@@ -66,15 +76,10 @@ Stats.prototype.drawBar = function(x, y) {
     return bar;
 };
 
-Stats.prototype.update = function() {
-    // update stats and progress bar
-    this.updateStats();
-};
-
 Stats.prototype.updateStats = function() {
     if(this.drawTimerBar) {
         // update bar progress
-        this.timerBar.progress.tint = this.calculateTint(this.object.timer.progress);
+        this.timerBar.progress.tint = this.progress.tint.timer;
         this.timerBar.progress.width = this.width * this.object.timer.progress / 100;
     }
 

@@ -14,8 +14,9 @@ function Cage(game, x, y, image, frame, group, enabled, pavilion) {
             current: enabled ? 100 : 0,
             label: 'Stan zwierząt',
             icon: 'condition_icon',
-            min_decrease: 1,
-            max_decrease: 5
+            min_decrease: 0.5,
+            hungry_decrease: 2,
+            full_decrease: 5
         }
     };
 
@@ -57,7 +58,7 @@ function Cage(game, x, y, image, frame, group, enabled, pavilion) {
         clock: null,
         event: null,
         loops: [],
-        duration: { minutes: 0, seconds: 30 },
+        duration: { minutes: 0, seconds: 15 },
         progress: 0
     };
 
@@ -83,11 +84,10 @@ Cage.prototype.init = function() {
     if(this.state.enabled) {
         // create timer
         this.createTimerEvent(this.timer.duration.minutes, this.timer.duration.seconds, true, this.cageReady);
-
-        // create timer loop
-        this.createTimerLoop(Phaser.Timer.SECOND, this.updateAttributes, this);
-        this.createTimerLoop(Phaser.Timer.SECOND, this.eatingFood, this);
     }
+
+    // create timer loop
+    this.createTimerLoop(Phaser.Timer.SECOND, this.updateCage, this);
 
     // create stats
     this.statsBar = new Stats(game, this.position.x, this.position.y, this, true, true);
@@ -95,25 +95,28 @@ Cage.prototype.init = function() {
     this.statsBar.attrsBar.alpha = 0;
 };
 
-Cage.prototype.update = function() {
+Cage.prototype.updateCage = function() {
     // enable/disable actions
     this.updateActions();
 
     if(this.state.enabled) {
-        // update timer
-        this.updateTimer();
+        // eat food
+        this.eatingFood();
+
+        // update attributes
+        this.updateAttributes();
     }
 };
 
 Cage.prototype.updateActions = function() {
     // update actions
-    //this.actions.default.kill.enabled = !simulator.farm.slaughterhouse.state.full && this.state.ready;
+    this.actions.kill.enabled = KillingStation.ready.length && this.state.ready;
     this.actions.add.enabled = Incubator.incubated.length;
 };
 
 Cage.prototype.updateAttributes = function() {
     // if there is no food decrease condition faster
-    var decrease = simulator.farm.foodStorage.state.empty ? this.attributes.condition.max_decrease : this.attributes.condition.min_decrease;
+    var decrease = simulator.farm.foodStorage.state.empty ? this.attributes.condition.hungry_decrease : this.attributes.condition.min_decrease;
 
     // decrease condition lvl
     if(this.attributes.condition.current - decrease <= this.attributes.condition.min) {
@@ -130,10 +133,8 @@ Cage.prototype.eatingFood = function() {
 
 Cage.prototype.kill = function(o) {
     // kill action
-    //simulator.farm.slaughterhouse.increaseKillStack();
-
+    KillingStation.ready[0].increaseKillStack();
     o.emptyCage();
-    o.destroyTimer();
 };
 
 Cage.prototype.heal = function(o) {
@@ -148,6 +149,9 @@ Cage.prototype.addAnimals = function(cage) {
     // enable cage & set timer
     cage.state.enabled = true;
 
+    // change texture
+    cage.loadTexture('cage_double_full', 0, false);
+
     // set attributes to max
     cage.attributes.condition.current = cage.attributes.condition.max;
 
@@ -160,11 +164,17 @@ Cage.prototype.addAnimals = function(cage) {
 };
 
 Cage.prototype.emptyCage = function() {
+    // destroy timer
+    this.resetTimer();
+
+    // change texture
+    this.loadTexture('cage_double_empty', 0, false);
+
     // reset current cage
     this.state.enabled = false;
 
     // set attributes to max
-    this.attributes.condition.current = this.attributes.condition.max;
+    this.attributes.condition.current = this.attributes.condition.min;
 
     //update actions
     this.actions.add.visible = true;

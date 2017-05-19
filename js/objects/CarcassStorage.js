@@ -11,7 +11,7 @@ function CarcassStorage(game, x, y, z, image, frame, group) {
             current: 0,
             label: 'Tusze',
             icon: 'kill_stock_icon',
-            increase: 1,
+            increase: 2
         }
     };
 
@@ -19,7 +19,7 @@ function CarcassStorage(game, x, y, z, image, frame, group) {
         utilization: {
             label: 'Utylizacja',
             icon: 'action_waste_icon',
-            position: 'left',
+            position: 'top',
             enabled: false,
             visible: true,
             callback: this.utilize,

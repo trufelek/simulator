@@ -31,6 +31,14 @@ function Prefab(game, x, y, image, frame, group) {
 Prefab.prototype = Object.create(Phaser.Sprite.prototype);
 Prefab.prototype.constructor = Prefab;
 
+Prefab.prototype.update = function() {
+    if(this.timer) {
+        if(this.timer.event) {
+            this.updateTimer();
+        }
+    }
+};
+
 Prefab.prototype.inputOver = function() {
     // highlight object on hover
     this.tint = this.highlight_tint;
@@ -43,18 +51,17 @@ Prefab.prototype.inputOut = function() {
 
 Prefab.prototype.click = function() {
     if(this.actions) {
-        // show actions
+        // show actions on click
         simulator.gui.showActions(this.id, this.position, this.actions);
     }
 };
 
 Prefab.prototype.createTimerEvent = function(minutes, seconds, autostart, callback) {
-    // timer event
+    // create timer event
     this.timer.clock = game.time.create();
     this.timer.event  = this.timer.clock.add(Phaser.Timer.MINUTE * minutes + Phaser.Timer.SECOND * seconds, callback, this);
 
     if(autostart) {
-        //start timer
         this.timer.clock.start();
     }
 };
@@ -65,30 +72,20 @@ Prefab.prototype.createTimerLoop = function(interval, callback, obj) {
 };
 
 Prefab.prototype.updateTimer = function() {
+    // update timer bar progress
     var time = {};
-
-    time.all = Math.round((this.timer.event.delay) / 1000);
-    time.left = Math.round((this.timer.event.delay - this.timer.clock.ms) / 1000);
+    time.all = Math.round((this.timer.event.delay));
+    time.left = Math.round((this.timer.event.delay - this.timer.clock.ms));
     time.passed = time.all - time.left;
 
-    // timer bar progress
     this.timer.progress = time.passed * 100 / time.all;
+    this.timer.progress = this.timer.progress > 100 ? 100 : this.timer.progress;
 };
 
 Prefab.prototype.resetTimer = function() {
     // destroy timer
     this.timer.clock.remove(this.timer.event);
     this.timer.clock.destroy();
-};
 
-Prefab.prototype.destroyTimer = function() {
-    // remove events & destroy timer
-    this.timer.clock.remove(this.timer.event);
-    game.time.events.remove(this.timer.loop);
-    this.timer.clock.destroy();
-
-    // reset timer values
-    this.timer.clock = null;
-    this.timer.event = null;
-    this.timer.loop = null;
+    this.timer.progress = 0;
 };

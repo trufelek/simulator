@@ -29,6 +29,7 @@
     "cage_double_full": { "type": "image", "path": "assets/img/cage_double_full.png" },
     "cage_double_empty": { "type": "image", "path": "assets/img/cage_double_empty.png" },
     "incubator": { "type": "image", "path": "assets/img/incubator.png" },
+    "incubator_full": { "type": "image", "path": "assets/img/incubator_full.png" },
     "food_storage": { "type": "image", "path": "assets/img/foodstorage.png" },
     "storage": { "type": "image", "path": "assets/img/storage.png" },
     "slaughterhouse_front": { "type": "image", "path": "assets/img/slaughterhouse.png" },

@@ -23,7 +23,8 @@ function Incubator(game, x, y, image, frame, group) {
     this.timer = {
         clock: null,
         event: null,
-        duration: { minutes: 0, seconds: 10 },
+        loops: [],
+        duration: { minutes: 0, seconds: 15 },
         progress: 0
     };
 
@@ -53,20 +54,18 @@ Incubator.prototype.init = function() {
     this.statsBar = new Stats(game, this.position.x, this.position.y, this, true, false);
 };
 
-Incubator.prototype.update = function() {
-    // update timer
-    this.updateTimer();
-};
-
-Incubator.prototype.incubate = function(o) {
+Incubator.prototype.incubate = function(incubator) {
     // disable incubate action
-    o.actions.incubate.enabled = false;
+    incubator.actions.incubate.enabled = false;
 
     // decrease owner cash
-    simulator.farm.owner.cash -= o.actions.incubate.cost;
+    simulator.farm.owner.cash -= incubator.actions.incubate.cost;
 
     //start timer
-    o.timer.clock.start();
+    incubator.timer.clock.start();
+
+    // change texture
+    incubator.loadTexture('incubator_full', 0, false);
 };
 
 Incubator.prototype.endIncubation = function() {
@@ -84,4 +83,7 @@ Incubator.dismissAnimals = function() {
 
     // create timer again
     incubator.createTimerEvent(incubator.timer.duration.minutes, incubator.timer.duration.seconds, false, incubator.endIncubation);
+
+    // change texture
+    incubator.loadTexture('incubator', 0, false);
 };

@@ -10,7 +10,8 @@ function FurStorage(game, x, y, z, image, frame, group) {
             min: 0,
             current: 0,
             label: 'Futro',
-            icon: 'fur_icon'
+            icon: 'fur_icon',
+            increase: 2
         }
     };
 
@@ -55,9 +56,9 @@ FurStorage.prototype.stack = function(stack) {
     this.stackFur(stack);
 };
 
-FurStorage.prototype.stackFur = function(fur) {
+FurStorage.prototype.stackFur = function() {
     // increase amount of fur in storage
-    if(this.attributes.fur.current + fur >= this.attributes.fur.max) {
+    if(this.attributes.fur.current + this.attributes.fur.increase >= this.attributes.fur.max) {
         this.attributes.fur.current = this.attributes.fur.max;
         // change state to full
         this.state.full = true;
@@ -65,7 +66,7 @@ FurStorage.prototype.stackFur = function(fur) {
         // enable sell action
         this.actions.sell.enabled = true;
     } else {
-        this.attributes.fur.current += fur;
+        this.attributes.fur.current += this.attributes.fur.increase;
     }
 };
 

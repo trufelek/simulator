@@ -28,7 +28,8 @@ var create = {
         var pavilionGroup = game.add.group();
         var cageGroup = game.add.group();
         var slaughterhouseGroup = game.add.group();
-        var storageGroup = game.add.group();
+        var carcassStorageGroup = game.add.group();
+        var furStorageGroup = game.add.group();
 
         var tile, offset;
 
@@ -65,7 +66,6 @@ var create = {
                 if(index >= 10 && index <= 31) {
                     var type = index.toString().split('');
                     var type_info = type.map(Number);
-
                     var pavilion = type_info[0];
                     var enabled = type_info[1];
 
@@ -91,7 +91,6 @@ var create = {
                 if(index == 50) {
                     var slaughterhouse_back = game.add.sprite(x, y, 'slaughterhouse_back', 0, slaughterhouseGroup);
                     slaughterhouse_back.anchor.set(0, 0);
-
                 }
 
                 if(index == 5) {
@@ -107,25 +106,26 @@ var create = {
                 }
 
                 if(index == 7) {
-                    tile = game.add.sprite(x, y, 'skinning_robot', 0, slaughterhouseGroup);
+                    tile = new SkinningStation(game, x, y, 'skinning_robot', 0, slaughterhouseGroup);
+                    simulator.farm.skinningStations.push(tile);
                     tile.anchor.set(0.5);
                 }
 
                 if(index == 8) {
-                    var furStorage = new FurStorage(game, x, y, 'storage', 0, storageGroup);
+                    var furStorage = new FurStorage(game, x, y, 'storage', 0, furStorageGroup);
                     simulator.farm.furStorage = furStorage;
                     furStorage.anchor.set(0.5);
                 }
 
-                if(index == 9) {
-                    var carcassStorage = new CarcassStorage(game, x, y, 'carcass', 0, storageGroup);
-                    simulator.farm.carcassStorage = carcassStorage;
-                    carcassStorage.anchor.set(0.5);
+                if(index == 81) {
+                    tile = game.add.sprite(x, y, 'furs', 0, furStorageGroup);
+                    tile.anchor.set(0.5);
                 }
 
-                if(index == 81) {
-                    tile = game.add.sprite(x, y, 'furs', 0);
-                    tile.anchor.set(0.5);
+                if(index == 9) {
+                    var carcassStorage = new CarcassStorage(game, x, y, 'carcass', 0, carcassStorageGroup);
+                    simulator.farm.carcassStorage = carcassStorage;
+                    carcassStorage.anchor.set(0.5);
                 }
             }
         }

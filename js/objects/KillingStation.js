@@ -14,10 +14,11 @@ function KillingStation(game, x, y, z, image, frame, group) {
         stack: {
             max: 50,
             min: 0,
-            current: 25,
+            current: 0,
             label: 'Ilość zwierząt',
             icon: 'kill_stock_icon',
-            increase: 25
+            increase: 25,
+            decrease: 2
         }
     };
 
@@ -53,6 +54,7 @@ function KillingStation(game, x, y, z, image, frame, group) {
     this.init();
 
     KillingStation.all[this.id] = this;
+    KillingStation.ready.push(this);
     KillingStation.count ++;
 }
 
@@ -67,55 +69,49 @@ KillingStation.prototype.init = function() {
     this.createTimerEvent(this.timer.duration.minutes, this.timer.duration.seconds, false, this.endKilling);
 
     // create timer loop
-    this.createTimerLoop(250, this.killing, this);
+    this.createTimerLoop(Phaser.Timer.SECOND, this.updateKillingStation, this);
 
     // create stats
     this.statsBar = new Stats(game, this.position.x, this.position.y, this, true, true);
     this.statsBar.timerBar.alpha = 0;
     this.statsBar.attrsBar.alpha = 0;
 };
-
-KillingStation.prototype.update = function() {
-    // update timer
-    this.updateTimer();
+KillingStation.prototype.updateKillingStation = function() {
+    if(this.state.full) {
+        this.killing();
+    }
 };
 
-KillingStation.prototype.updateActions = function() {
-    // update actions
-    //this.actions.kill.enabled = !simulator.farm.storage.state.full && this.state.full;
-    this.actions.kill.enabled = this.state.full;
-};
 
 KillingStation.prototype.increaseKillStack = function() {
     // increase stack lvl
-    if(this.attributes.stack.current + this.attributes.stack.increase < this.attributes.stack.max) {
+    if(this.attributes.stack.current + this.attributes.stack.increase <= this.attributes.stack.max) {
         this.attributes.stack.current += this.attributes.stack.increase;
 
         if(this.attributes.stack.current == this.attributes.stack.max) {
             this.state.full = true;
+            KillingStation.ready.shift();
         }
     }
 };
 
-KillingStation.prototype.kill = function() {
-    // start killing clock
-    //this.timer.clock.start();
-
-    this.increaseKillStack();
-
-
-    // disable kill action
-    this.actions.kill.enabled = false;
-};
-
-
 KillingStation.prototype.endKilling = function() {
     // decrease stack
-    this.attributes.stack.current --;
+    this.attributes.stack.current -= this.attributes.stack.decrease;
 
     // count killed animals
-    this.stats.killed ++;
+    this.stats.killed += this.attributes.stack.decrease;
 
+    if(!this.attributes.stack.current && SkinningStation.ready.length) {
+        this.state.full = false;
+
+        if(KillingStation.ready.indexOf(this) == -1) {
+            KillingStation.ready.unshift(this);
+
+            // update skinnign stations
+            SkinningStation.ready[0].increaseSkinStack();
+        }
+    }
 
     // stack carcass & furs in storage
     simulator.farm.carcassStorage.stackCarcass();
@@ -128,7 +124,7 @@ KillingStation.prototype.endKilling = function() {
 };
 
 KillingStation.prototype.killing = function() {
-    if(this.attributes.stack.current) {
+    if(this.attributes.stack.current && !simulator.farm.carcassStorage.state.full) {
         this.timer.clock.start();
     }
 };

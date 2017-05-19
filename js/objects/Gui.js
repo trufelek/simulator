@@ -25,7 +25,7 @@ function GUI() {
     };
 
     this.tint = {
-        enabled: '0xB3B3B3',
+        disabled: '0xB3B3B3',
         debt: '0xff5855'
     };
 
@@ -112,8 +112,8 @@ GUI.prototype.createActions = function(id, position, actions) {
                 break;
 
             case 'top':
-                x += 20;
-                y -= 25;
+                x += 18;
+                y -= 20;
                 break;
         }
 
@@ -126,17 +126,18 @@ GUI.prototype.createActions = function(id, position, actions) {
             if(action.enabled) {
                 cta.inputEnabled = true;
                 cta.input.useHandCursor = true;
+                cta.input.priorityID = 2;
                 cta.events.onInputOver.add(this.actionOver, {cta: cta, action: action, gui: this});
                 cta.events.onInputOut.add(this.actionOut, {cta: cta, action: action, gui: this});
                 cta.events.onInputDown.add(this.actionDown, {cta: cta, action: action, gui: this, object: Prefab.all[id]});
             } else {
-                cta.tint = this.tint.enabled;
+                cta.tint = this.tint.disabled;
             }
         }
     }
 
     // adjust actions to camera
-    this.adjustActionsToCamera();
+    //this.adjustActionsToCamera();
 };
 
 GUI.prototype.adjustActionsToCamera = function() {

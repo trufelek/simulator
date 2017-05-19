@@ -1,14 +1,24 @@
-function Skinning(game, x, y, z, image, frame, group) {
+/*
+ Skinning Station Class
+*/
+SkinningStation.all = {};
+SkinningStation.count = 0;
+SkinningStation.ready = [];
+
+function SkinningStation(game, x, y, z, image, frame, group) {
     Prefab.call(this, game, x, y, z, image, frame, group);
+
+    this.id = SkinningStation.count;
 
     this.attributes = {
         stack: {
-            max: 100,
+            max: 50,
             min: 0,
             current: 0,
             label: 'Ilość zwierząt',
             icon: 'kill_stock_icon',
-            increase: 25
+            increase: 50,
+            decrease: 2
         }
     };
 
@@ -18,6 +28,7 @@ function Skinning(game, x, y, z, image, frame, group) {
             icon: 'action_kill_icon',
             position: 'top',
             enabled: false,
+            visible: true,
             callback: this.kill,
             cost: 10000
         }
@@ -31,68 +42,80 @@ function Skinning(game, x, y, z, image, frame, group) {
     this.timer = {
         clock: null,
         event: null,
-        loop: null
+        loops: [],
+        duration: { minutes: 0, seconds: 1 },
+        progress: 0
     };
 
     this.stats = {
-        killed: 0
+        skinned: 0
     };
 
     this.init();
+
+    SkinningStation.all[this.id] = this;
+    SkinningStation.ready.push(this);
+    SkinningStation.count ++;
 }
 
-Skinning.prototype = Object.create(Prefab.prototype);
-Skinning.prototype.constructor = Skinning;
+SkinningStation.prototype = Object.create(Prefab.prototype);
+SkinningStation.prototype.constructor = SkinningStation;
 
-Skinning.prototype.init = function() {
+SkinningStation.prototype.init = function() {
     // add object to game
     game.add.existing(this);
 
     // create timer
-    this.createTimerEvent(this.timer.value.minutes, this.timer.value.seconds, true, this.endTimer);
+    this.createTimerEvent(this.timer.duration.minutes, this.timer.duration.seconds, false, this.endSkinning);
 
+    // create timer loop
+    this.createTimerLoop(Phaser.Timer.SECOND, this.skinning, this);
+
+    // create stats
+    this.statsBar = new Stats(game, this.position.x, this.position.y, this, true, true);
+    this.statsBar.timerBar.alpha = 0;
+    this.statsBar.attrsBar.alpha = 0;
 };
 
-Skinning.prototype.update = function() {
-    // enable/disable actions
-    this.updateActions();
-};
-
-Skinning.prototype.updateActions = function() {
-    // update actions
-    this.actions.kill.enabled = !simulator.farm.storage.state.full && this.state.full;
-};
-
-Skinning.prototype.endTimer = function() {
-    // count killed animals
-    this.stats.killed += this.attributes.stack.current;
-
-    // stack carcass & furs in storage
-    simulator.farm.storage.stack(this.attributes.stack.current);
-
-    // reset slaughterhouse stack & timer
-    this.attributes.stack.current = 0;
-    this.state.full = false;
-    this.resetTimer();
-};
-
-Skinning.prototype.increaseKillStack = function() {
+SkinningStation.prototype.increaseSkinStack = function() {
     // increase stack lvl
-    if(this.attributes.stack.current + this.attributes.stack.increase >= this.attributes.stack.max) {
-        this.attributes.stack.current = this.attributes.stack.max;
-        this.state.full = true;
-    } else {
+    if(this.attributes.stack.current + this.attributes.stack.increase <= this.attributes.stack.max) {
         this.attributes.stack.current += this.attributes.stack.increase;
+
+        if(this.attributes.stack.current == this.attributes.stack.max) {
+            this.state.full = true;
+            SkinningStation.ready.shift();
+        }
     }
 };
 
-Skinning.prototype.kill = function(o) {
-    // start killing clock
-    o.timer.clock.start();
+SkinningStation.prototype.endSkinning = function() {
+    // decrease stack
+    this.attributes.stack.current -= this.attributes.stack.decrease;
 
-    // decrease owner cash
-    simulator.farm.owner.cash -= o.actions.kill.cost;
+    // count killed animals
+    this.stats.skinned += this.attributes.stack.decrease;
 
-    // disable kill action
-    o.actions.kill.enabled = false;
+    if(!this.attributes.stack.current) {
+        this.state.full = false;
+
+        if(SkinningStation.ready.indexOf(this) == -1) {
+            SkinningStation.ready.unshift(this);
+        }
+    }
+
+    // stack carcass & furs in storage
+    simulator.farm.furStorage.stackFur();
+
+    // reset timer
+    this.resetTimer();
+
+    // create timer
+    this.createTimerEvent(this.timer.duration.minutes, this.timer.duration.seconds, false, this.endSkinning);
+};
+
+SkinningStation.prototype.skinning = function() {
+    if(this.attributes.stack.current && !simulator.farm.furStorage.state.full) {
+        this.timer.clock.start();
+    }
 };

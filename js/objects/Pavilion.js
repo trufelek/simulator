@@ -13,6 +13,12 @@ function Pavilion(game, x, y, image, frame, group) {
     this.hidden = false;
     this.cages = [];
 
+    this.timer = {
+        clock: null,
+        event: null,
+        loops: []
+    };
+
     this.init();
 
     Pavilion.all[this.pavilionId] = this;
@@ -36,11 +42,26 @@ Pavilion.prototype.init = function() {
             }
         }
     }
+
+    game.time.events.add(Phaser.Timer.SECOND, this.hidePavilion, this);
+
+    // create timer loop
+    this.createTimerLoop(500, this.updatePavilion, this);
+};
+
+Pavilion.prototype.updatePavilion = function() {
+    if (game.input.activePointer.isDown) {
+        if(game.camera.x < 200) {
+            this.hidePavilion();
+        } else {
+            this.showPavilion();
+        }
+    }
 };
 
 Pavilion.prototype.hidePavilion = function() {
     // hide on hover
-    game.add.tween(this).to({alpha: 0}, 100, Phaser.Easing.Linear.None, true, 0, 0, false);
+    game.add.tween(this).to({alpha: 0}, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
     this.hidden = true;
 
     this.showCagesStats();
@@ -48,38 +69,23 @@ Pavilion.prototype.hidePavilion = function() {
 
 Pavilion.prototype.showCagesStats = function() {
     this.cages.forEach(function(e, i){
-        game.add.tween(e.statsBar.timerBar).to( { alpha: 1 }, 100, Phaser.Easing.Linear.None, true, 0, 0, false);
-        game.add.tween(e.statsBar.attrsBar).to( { alpha: 1 }, 100, Phaser.Easing.Linear.None, true, 0, 0, false);
+        game.add.tween(e.statsBar.timerBar).to( { alpha: 1 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
+        game.add.tween(e.statsBar.attrsBar).to( { alpha: 1 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
         e.input.priorityID = 1;
     });
 };
 
-Pavilion.prototype.showHiddenPavilions = function() {
-    for(var p in Pavilion.all) {
-        if(Pavilion.all.hasOwnProperty(p)) {
-            if(Pavilion.all[p].alpha == 0) {
-                game.add.tween(Pavilion.all[p]).to( { alpha: 1 }, 100, Phaser.Easing.Linear.None, true, 0, 0, false);
-                Pavilion.all[p].hidden = false;
-                Pavilion.all[p].hideCagesStats();
-            }
-        }
-    }
+Pavilion.prototype.showPavilion = function() {
+    game.add.tween(this).to({alpha: 1}, 100, Phaser.Easing.Linear.None, true, 0, 0, false);
+    this.hidden = false;
+
+    this.hideCagesStats();
 };
 
 Pavilion.prototype.hideCagesStats = function() {
     this.cages.forEach(function(e, i){
-        game.add.tween(e.statsBar.timerBar).to( { alpha: 0 }, 100, Phaser.Easing.Linear.None, true, 0, 0, false);
-        game.add.tween(e.statsBar.attrsBar).to( { alpha: 0 }, 100, Phaser.Easing.Linear.None, true, 0, 0, false);
+        game.add.tween(e.statsBar.timerBar).to( { alpha: 0 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
+        game.add.tween(e.statsBar.attrsBar).to( { alpha: 0 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
         e.input.priorityID = 0;
     });
-};
-
-Pavilion.prototype.update = function() {
-    if (game.input.activePointer.isDown) {
-        if(game.camera.x < 200) {
-            this.hidePavilion();
-        } else {
-            this.showHiddenPavilions();
-        }
-    }
 };
