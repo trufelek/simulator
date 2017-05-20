@@ -53,6 +53,8 @@ function SkinningStation(game, x, y, z, image, frame, group) {
 
     this.init();
 
+    this.sound = game.add.audio('skinning');
+
     SkinningStation.all[this.id] = this;
     SkinningStation.ready.push(this);
     SkinningStation.count ++;
@@ -69,12 +71,16 @@ SkinningStation.prototype.init = function() {
     this.createTimerEvent(this.timer.duration.minutes, this.timer.duration.seconds, false, this.endSkinning);
 
     // create timer loop
-    this.createTimerLoop(500, this.skinning, this);
+    this.createTimerLoop(1000, this.updateSkinningStation, this);
 
     // create stats
     this.statsBar = new Stats(game, this.position.x, this.position.y, this, true, true);
     this.statsBar.timerBar.alpha = 0;
     this.statsBar.attrsBar.alpha = 0;
+};
+
+SkinningStation.prototype.updateSkinningStation = function() {
+    this.skinning();
 };
 
 SkinningStation.prototype.increaseSkinStack = function() {
@@ -95,6 +101,9 @@ SkinningStation.prototype.endSkinning = function() {
 
     // count killed animals
     this.stats.skinned += this.attributes.stack.decrease;
+
+    // play sound
+    this.sound.play();
 
     if(!this.attributes.stack.current) {
         this.state.full = false;

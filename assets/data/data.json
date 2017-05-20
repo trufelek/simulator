@@ -48,6 +48,11 @@
     "progress_bar": { "type": "image", "path": "assets/img/gui/progress.png" },
     "wallet": { "type": "image", "path": "assets/img/gui/wallet.png" },
     "timer": { "type": "image", "path": "assets/img/gui/timer.png" },
+    "alert": { "type": "image", "path": "assets/img/gui/alert.png" },
+    "volume_on": { "type": "image", "path": "assets/img/gui/volume_on.png" },
+    "volume_off": { "type": "image", "path": "assets/img/gui/volume_off.png" },
+    "music_on": { "type": "image", "path": "assets/img/gui/music_on.png" },
+    "music_off": { "type": "image", "path": "assets/img/gui/music_off.png" },
 
     "clock_icon": { "type": "image", "path": "assets/img/icons/clock_icon.png" },
     "condition_icon": { "type": "image", "path": "assets/img/icons/condition_icon.png" },
@@ -62,6 +67,20 @@
     "action_sell_icon": { "type": "image", "path": "assets/img/icons/action_sell_icon.png" },
     "action_waste_icon": { "type": "image", "path": "assets/img/icons/action_waste_icon.png" },
     "action_incubate_icon": { "type": "image", "path": "assets/img/icons/action_incubate_icon.png" },
-    "action_add_icon": { "type": "image", "path": "assets/img/icons/action_add_icon.png" }
+    "action_add_icon": { "type": "image", "path": "assets/img/icons/action_add_icon.png" },
+
+    "background_music": { "type": "sound", "path": "assets/sounds/background.wav" },
+    "food": { "type": "sound", "path": "assets/sounds/food.wav" },
+    "garbage": { "type": "sound", "path": "assets/sounds/garbage.wav" },
+    "add1": { "type": "sound", "path": "assets/sounds/add1.wav" },
+    "add2": { "type": "sound", "path": "assets/sounds/add2.wav" },
+    "kill1": { "type": "sound", "path": "assets/sounds/kill1.wav" },
+    "kill2": { "type": "sound", "path": "assets/sounds/kill2.wav" },
+    "kill3": { "type": "sound", "path": "assets/sounds/kill3.wav" },
+    "incubate1": { "type": "sound", "path": "assets/sounds/incubate1.wav" },
+    "incubate2": { "type": "sound", "path": "assets/sounds/incubate2.wav" },
+    "killing": { "type": "sound", "path": "assets/sounds/killing.wav" },
+    "skinning": { "type": "sound", "path": "assets/sounds/skinning.wav" },
+    "selling": { "type": "sound", "path": "assets/sounds/selling.wav" }
   }
 }

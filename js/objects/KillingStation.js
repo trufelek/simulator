@@ -51,6 +51,8 @@ function KillingStation(game, x, y, z, image, frame, group) {
         killed: 0
     };
 
+    this.sound = game.add.audio('killing');
+
     this.init();
 
     KillingStation.all[this.id] = this;
@@ -69,19 +71,19 @@ KillingStation.prototype.init = function() {
     this.createTimerEvent(this.timer.duration.minutes, this.timer.duration.seconds, false, this.endKilling);
 
     // create timer loop
-    this.createTimerLoop(500, this.updateKillingStation, this);
+    this.createTimerLoop(1000, this.updateKillingStation, this);
 
     // create stats
     this.statsBar = new Stats(game, this.position.x, this.position.y, this, true, true);
     this.statsBar.timerBar.alpha = 0;
     this.statsBar.attrsBar.alpha = 0;
 };
+
 KillingStation.prototype.updateKillingStation = function() {
     if(this.state.full) {
         this.killing();
     }
 };
-
 
 KillingStation.prototype.increaseKillStack = function() {
     // increase stack lvl
@@ -101,6 +103,9 @@ KillingStation.prototype.endKilling = function() {
 
     // count killed animals
     this.stats.killed += this.attributes.stack.decrease;
+
+    // play sound
+    this.sound.play();
 
     if(!this.attributes.stack.current && SkinningStation.ready.length) {
         this.state.full = false;

@@ -52,7 +52,7 @@ Pavilion.prototype.init = function() {
     game.time.events.add(Phaser.Timer.SECOND, this.hidePavilion, this);
 
     // create timer loop
-    this.createTimerLoop(500, this.updatePavilion, this);
+    this.createTimerLoop(250, this.updatePavilion, this);
 };
 
 Pavilion.prototype.updatePavilion = function() {

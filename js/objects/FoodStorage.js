@@ -22,7 +22,8 @@ function FoodStorage(game, x, y, image, frame, group) {
             enabled: true,
             visible: true,
             callback: this.buyFood,
-            cost: 10
+            cost: 10,
+            sound: game.add.audio('food')
         }
     };
 
@@ -53,6 +54,8 @@ FoodStorage.prototype.buyFood = function(o) {
     o.actions.buyFood.enabled = false;
     o.state.empty = false;
 
+    // play sound
+    o.actions.buyFood.sound.play();
 };
 
 FoodStorage.prototype.consumeFood = function(food) {

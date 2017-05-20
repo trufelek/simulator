@@ -7,15 +7,15 @@ var create = {
         // set background color
         game.stage.backgroundColor = simulator.settings.background;
 
+        // add background music
+        simulator.music = game.add.audio('background_music');
+        simulator.music.loopFull(0.4);
+
         // set world bounds
         game.world.setBounds(0, 0, simulator.settings.width, simulator.settings.height);
 
         // create map
         this.createZigZagMap();
-
-        window.addEventListener('resize', function() {
-            console.log(game.scale.width, game.scale.height);
-        });
 
         // create gui
         simulator.gui = new GUI();

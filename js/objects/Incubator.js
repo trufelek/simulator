@@ -16,7 +16,8 @@ function Incubator(game, x, y, image, frame, group) {
             enabled: true,
             visible: true,
             callback: this.incubate,
-            cost: 1000
+            cost: 1000,
+            sounds: [game.add.audio('incubate1'), game.add.audio('incubate2')]
         }
     };
 
@@ -57,6 +58,11 @@ Incubator.prototype.init = function() {
 Incubator.prototype.incubate = function(incubator) {
     // disable incubate action
     incubator.actions.incubate.enabled = false;
+
+    // play sound
+    // play sound
+    var sound = Math.round(Math.random());
+    incubator.actions.incubate.sounds[sound].play();
 
     // decrease owner cash
     simulator.farm.owner.cash -= incubator.actions.incubate.cost;

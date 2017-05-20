@@ -27,7 +27,8 @@ function Cage(game, x, y, image, frame, group, enabled, pavilion) {
             position: 'top',
             enabled: false,
             visible: enabled,
-            callback: this.kill
+            callback: this.kill,
+            sounds: [game.add.audio('kill1'),  game.add.audio('kill2'), game.add.audio('kill3')]
         },
         heal: {
             label: 'Wylecz',
@@ -44,7 +45,8 @@ function Cage(game, x, y, image, frame, group, enabled, pavilion) {
             position: 'top',
             enabled: false,
             visible: enabled ? false : true,
-            callback: this.addAnimals
+            callback: this.addAnimals,
+            sounds: [game.add.audio('add1'), game.add.audio('add2')]
         }
     };
 
@@ -87,7 +89,7 @@ Cage.prototype.init = function() {
     }
 
     // create timer loop
-    this.createTimerLoop(500, this.updateCage, this);
+    this.createTimerLoop(1000, this.updateCage, this);
 
     // create stats
     this.statsBar = new Stats(game, this.position.x, this.position.y, this, true, true);
@@ -140,10 +142,16 @@ Cage.prototype.eatingFood = function() {
     simulator.farm.foodStorage.consumeFood(this.eatingAmount);
 };
 
-Cage.prototype.kill = function(o) {
-    // kill action
-    KillingStation.ready[0].increaseKillStack();
-    o.emptyCage();
+Cage.prototype.kill = function(cage) {
+    if(KillingStation.ready.length) {
+        // kill action
+        KillingStation.ready[0].increaseKillStack();
+        cage.emptyCage();
+
+        // play sound
+        var sound = cage.getRandomInt(0,2);
+        cage.actions.kill.sounds[sound].play();
+    }
 };
 
 Cage.prototype.heal = function(o) {
@@ -152,27 +160,33 @@ Cage.prototype.heal = function(o) {
 };
 
 Cage.prototype.addAnimals = function(cage) {
-    // release incubator from incubated array
-    Incubator.dismissAnimals();
+    if(Incubator.incubated.length) {
+        // release incubator from incubated array
+        Incubator.dismissAnimals();
 
-    // enable cage & set timer
-    cage.state.enabled = true;
+        // enable cage & set timer
+        cage.state.enabled = true;
 
-    // change texture
-    cage.loadTexture('cage_double_full', 0, false);
+        // change texture
+        cage.loadTexture('cage_double_full', 0, false);
 
-    // set attributes to max
-    cage.attributes.condition.current = cage.attributes.condition.max;
+        // play sound
+        var sound = cage.getRandomInt(0,1);
+        cage.actions.add.sounds[sound].play();
 
-    // update actions
-    cage.actions.add.visible = false;
-    cage.actions.kill.visible = true;
+        // set attributes to max
+        cage.attributes.condition.current = cage.attributes.condition.max;
 
-    // add cage to pavilion full cages
-    cage.pavilion.fullCages.push(cage);
+        // update actions
+        cage.actions.add.visible = false;
+        cage.actions.kill.visible = true;
 
-    // create timer
-    cage.createTimerEvent(cage.timer.duration.minutes, cage.timer.duration.seconds, true, cage.cageReady);
+        // add cage to pavilion full cages
+        cage.pavilion.fullCages.push(cage);
+
+        // create timer
+        cage.createTimerEvent(cage.timer.duration.minutes, cage.timer.duration.seconds, true, cage.cageReady);
+    }
 };
 
 Cage.prototype.emptyCage = function() {

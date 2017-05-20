@@ -13,6 +13,10 @@ var load = {
                     case 'image':
                         game.load.image(asset_key, asset.path);
                     break;
+
+                    case 'sound':
+                        game.load.audio(asset_key, asset.path);
+                    break;
                 }
             }
         }

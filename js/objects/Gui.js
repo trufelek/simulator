@@ -34,37 +34,61 @@ function GUI() {
         state: 'idle'
     };
 
+    this.interface = null;
     this.actions = null;
     this.timer = null;
     this.cash = null;
+    this.volume = null;
+    this.music = null;
 
     this.createInterface();
 }
 
 GUI.prototype.createInterface = function() {
-    var interface = game.add.group();
+    this.interface = game.add.group();
 
+    // draw cash info
     var wallet = game.add.sprite(25, 5, 'wallet');
     wallet.width = 45;
     wallet.height = 45;
-    wallet.fixedToCamera = true;
 
     this.cash = game.add.text(85, 15, '0 zł', this.interfaceStyles);
     this.cash.stroke = '#000000';
     this.cash.strokeThickness = 6;
 
+    // draw time info
     var clock = game.add.sprite(window.innerWidth - 65, 10, 'timer');
     clock.width = 40;
     clock.height = 40;
-    clock.fixedToCamera = true;
 
     this.timer = game.add.text(window.innerWidth - clock.width - 100, 15, '00:00', this.interfaceStyles);
     this.timer.stroke = '#000000';
     this.timer.strokeThickness = 6;
 
-    interface.add(this.timer, this.cash);
-    interface.add(this.cash);
-    interface.fixedToCamera = true;
+    // draw music button
+    this.music = game.add.sprite(window.innerWidth - 210, 20, 'music_on');
+    this.music.inputEnabled = true;
+    this.music.input.useHandCursor = true;
+    this.music.height = 25;
+    this.music.width = 25;
+    this.music.events.onInputDown.add(this.toggleMusic, this);
+
+    // draw sound button
+    this.volume = game.add.sprite(window.innerWidth - 175, 20, 'volume_on');
+    this.volume.inputEnabled = true;
+    this.volume.input.useHandCursor = true;
+    this.volume.height = 25;
+    this.volume.width = 25;
+    this.volume.events.onInputDown.add(this.toggleVolume, this);
+
+    // add to interface
+    this.interface.add(clock);
+    this.interface.add(wallet);
+    this.interface.add(this.cash);
+    this.interface.add(this.timer);
+    this.interface.add(this.volume);
+    this.interface.add(this.music);
+    this.interface.fixedToCamera = true;
 };
 
 GUI.prototype.updateInterface = function() {
@@ -181,4 +205,31 @@ GUI.prototype.formatTime = function(s) {
     var minutes = "0" + Math.floor(s / 60);
     var seconds = "0" + (s - minutes * 60);
     return minutes.substr(-2) + ":" + seconds.substr(-2);
+};
+
+GUI.prototype.toggleMusic = function() {
+    // toggle game sound
+    simulator.music.mute = simulator.music.mute ? false : true;
+
+    // toggle volume button texture
+    if(simulator.music.mute) {
+        this.music.loadTexture('music_off', 0, false);
+    } else {
+        this.music.loadTexture('music_on', 0, false);
+    }
+};
+
+GUI.prototype.toggleVolume = function() {
+    // toggle game sound
+    game.sound.mute = game.sound.mute ? false : true;
+    simulator.music.mute = game.sound.mute ? true : false;
+
+    // toggle volume button texture
+    if(game.sound.mute) {
+        this.volume.loadTexture('volume_off', 0, false);
+        this.music.loadTexture('music_off', 0, false);
+    } else {
+        this.volume.loadTexture('volume_on', 0, false);
+        this.music.loadTexture('music_on', 0, false);
+    }
 };

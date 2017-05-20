@@ -38,7 +38,7 @@ Slaughterhouse.prototype.init = function() {
     }
 
     // create timer loop
-    this.createTimerLoop(500, this.updateSlaughterhouse, this);
+    this.createTimerLoop(250, this.updateSlaughterhouse, this);
 };
 
 Slaughterhouse.prototype.updateSlaughterhouse = function() {
@@ -64,6 +64,7 @@ Slaughterhouse.prototype.showChildrenStats = function() {
         game.add.tween(e.statsBar.timerBar).to( { alpha: 1 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
         game.add.tween(e.statsBar.attrsBar).to( { alpha: 1 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
         e.input.priorityID = 1;
+        e.sound.volume = 1;
     });
 };
 
@@ -79,5 +80,6 @@ Slaughterhouse.prototype.hideChildrenStats = function() {
         game.add.tween(e.statsBar.timerBar).to( { alpha: 0 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
         game.add.tween(e.statsBar.attrsBar).to( { alpha: 0 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
         e.input.priorityID = 0;
+        e.sound.volume = 0.3;
     });
 };

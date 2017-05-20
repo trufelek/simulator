@@ -23,7 +23,8 @@ function CarcassStorage(game, x, y, z, image, frame, group) {
             enabled: false,
             visible: true,
             callback: this.utilize,
-            cost: 5000
+            cost: 5,
+            sound: game.add.audio('garbage')
         }
     };
 
@@ -57,12 +58,12 @@ CarcassStorage.prototype.stackCarcass = function() {
         this.attributes.carcass.current = this.attributes.carcass.max;
         // change state to full
         this.state.full = true;
-
-        // enable utilize action
-        this.actions.utilization.enabled = true;
     } else {
         this.attributes.carcass.current += this.attributes.carcass.increase;
     }
+
+    // enable utilize action
+    this.actions.utilization.enabled = true;
 };
 
 
@@ -70,14 +71,17 @@ CarcassStorage.prototype.utilize = function(o) {
     // increase amount of utilized carcass
     o.stats.carcass += o.attributes.carcass.current;
 
+    // decrease owner cash
+    simulator.farm.owner.cash -= o.attributes.carcass.current * o.actions.utilization.cost;
+
     // decrease amount of carcass
     o.attributes.carcass.current = o.attributes.carcass.min;
 
     // disable action utilize
     o.actions.utilization.enabled = false;
 
-    // decrease owner cash
-    simulator.farm.owner.cash -= o.actions.utilization.cost;
+    // play sound
+    o.actions.utilization.sound.play();
 
     // change state to empty
     o.state.full = false;
