@@ -21,6 +21,9 @@
     }
   },
   "assets" : {
+    "home": { "type": "image", "path": "assets/img/home.png" },
+    "start": { "type": "image", "path": "assets/img/start.png" },
+    "start_hover": { "type": "image", "path": "assets/img/start_hover.png" },
     "background": { "type": "image", "path": "assets/img/background.png" },
     "ground": { "type": "image", "path": "assets/img/ground.png" },
     "box": { "type": "image", "path": "assets/img/box.png" },

@@ -233,3 +233,19 @@ GUI.prototype.toggleVolume = function() {
         this.music.loadTexture('music_on', 0, false);
     }
 };
+
+GUI.prototype.showAlert = function(obj) {
+    if(!obj.alert) {
+        obj.alert = game.add.sprite(obj.position.x, obj.position.y - 25, 'alert');
+        obj.alert.anchor.setTo(0.5);
+
+        game.add.tween(obj.alert.scale).to( { x: 1.5, y: 1.5 }, 1000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+    }
+};
+
+GUI.prototype.hideAlert = function(obj) {
+    if(obj.alert) {
+        obj.alert.destroy();
+        obj.alert = null;
+    }
+};

@@ -139,7 +139,9 @@ Cage.prototype.updateAttributes = function() {
 
 Cage.prototype.eatingFood = function() {
     // decrease food lvl in food store
-    simulator.farm.foodStorage.consumeFood(this.eatingAmount);
+    if(!simulator.farm.foodStorage.state.empty) {
+        simulator.farm.foodStorage.consumeFood(this.eatingAmount);
+    }
 };
 
 Cage.prototype.kill = function(cage) {

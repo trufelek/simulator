@@ -36,6 +36,7 @@ function FurStorage(game, x, y, z, image, frame, group) {
         fur: 0
     };
 
+    this.alert = null;
     this.statsBar = null;
 
     this.init();
@@ -63,6 +64,9 @@ FurStorage.prototype.stackFur = function() {
         this.attributes.fur.current = this.attributes.fur.max;
         // change state to full
         this.state.full = true;
+
+        // show alert
+        simulator.gui.showAlert(this);
     } else {
         this.attributes.fur.current += this.attributes.fur.increase;
     }
@@ -89,4 +93,7 @@ FurStorage.prototype.sell = function(o) {
 
     // change state to empty
     o.state.full = false;
+
+    // hide alert
+    simulator.gui.hideAlert(o);
 };

@@ -31,6 +31,7 @@ function FoodStorage(game, x, y, image, frame, group) {
         empty: false
     };
 
+    this.alert = null;
     this.init();
 }
 
@@ -54,6 +55,9 @@ FoodStorage.prototype.buyFood = function(o) {
     o.actions.buyFood.enabled = false;
     o.state.empty = false;
 
+    // hide alert
+    simulator.gui.hideAlert(o);
+
     // play sound
     o.actions.buyFood.sound.play();
 };
@@ -63,6 +67,9 @@ FoodStorage.prototype.consumeFood = function(food) {
     if(this.attributes.food.current - food <= this.attributes.food.min) {
         this.attributes.food.current = this.attributes.food.min;
         this.state.empty = true;
+
+        // show alert
+        simulator.gui.showAlert(this);
     } else {
         this.attributes.food.current -= food;
     }

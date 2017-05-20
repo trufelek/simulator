@@ -7,6 +7,9 @@ var boot = {
     },
 
     preload: function() {
+        game.load.image('loader_text', 'assets/img/loader_text.png');
+        game.load.image('loader', 'assets/img/loader.png');
+
         // download json settings
         this.load.text('data', 'assets/data/data.json');
 

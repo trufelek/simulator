@@ -36,6 +36,7 @@ function CarcassStorage(game, x, y, z, image, frame, group) {
         carcass: 0
     };
 
+    this.alert = null;
     this.statsBar = null;
 
     this.init();
@@ -58,6 +59,9 @@ CarcassStorage.prototype.stackCarcass = function() {
         this.attributes.carcass.current = this.attributes.carcass.max;
         // change state to full
         this.state.full = true;
+
+        // show alert
+        simulator.gui.showAlert(this);
     } else {
         this.attributes.carcass.current += this.attributes.carcass.increase;
     }
@@ -85,4 +89,7 @@ CarcassStorage.prototype.utilize = function(o) {
 
     // change state to empty
     o.state.full = false;
+
+    // hide alert
+    simulator.gui.hideAlert(o);
 };
