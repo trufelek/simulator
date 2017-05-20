@@ -22,18 +22,6 @@ function KillingStation(game, x, y, z, image, frame, group) {
         }
     };
 
-    this.actions = {
-        kill: {
-            label: 'Ubój',
-            icon: 'action_kill_icon',
-            position: 'top',
-            enabled: false,
-            visible: true,
-            callback: this.kill,
-            cost: 10000
-        }
-    };
-
     this.state = {
         ready: true,
         full: false
