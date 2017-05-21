@@ -28,7 +28,9 @@ function Cage(game, x, y, image, frame, group, enabled, pavilion) {
             enabled: false,
             visible: enabled,
             callback: this.kill,
-            sounds: [game.add.audio('kill1'),  game.add.audio('kill2'), game.add.audio('kill3')]
+            sounds: [game.add.audio('kill1'),  game.add.audio('kill2'), game.add.audio('kill3')],
+            cost: 500,
+            income: false,
         },
         heal: {
             label: 'Wylecz',
@@ -149,6 +151,10 @@ Cage.prototype.kill = function(cage) {
         // kill action
         KillingStation.ready[0].increaseKillStack();
         cage.emptyCage();
+
+        // decrease owner cash
+        simulator.farm.owner.cash -= cage.actions.kill.cost;
+        simulator.gui.showCost(cage.actions.kill.cost, cage.actions.kill.income, cage.position);
 
         // play sound
         var sound = cage.getRandomInt(0,2);

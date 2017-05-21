@@ -84,6 +84,7 @@
     "incubate2": { "type": "sound", "path": "assets/sounds/incubate2.wav" },
     "killing": { "type": "sound", "path": "assets/sounds/killing.wav" },
     "skinning": { "type": "sound", "path": "assets/sounds/skinning.wav" },
-    "selling": { "type": "sound", "path": "assets/sounds/selling.wav" }
+    "selling": { "type": "sound", "path": "assets/sounds/selling.wav" },
+    "alert_beep": { "type": "sound", "path": "assets/sounds/alert.wav" }
   }
 }

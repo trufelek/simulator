@@ -8,6 +8,7 @@ function GUI() {
         wordWrap: false,
         align: 'left'
     };
+
     this.interfaceStyles = {
         font: 'bold 24px Arial',
         fill: '#F5F5F5',
@@ -25,6 +26,7 @@ function GUI() {
     };
 
     this.tint = {
+        default: '0xffffff',
         disabled: '0xB3B3B3',
         debt: '0xff5855'
     };
@@ -92,27 +94,31 @@ GUI.prototype.createInterface = function() {
 };
 
 GUI.prototype.updateInterface = function() {
+    // update timer
     var time = Math.round(game.time.now / 1000);
     this.timer.setText(this.formatTime(time));
 
+    // update cash
     this.cash.setText(simulator.farm.owner.cash + ' zł');
 
     if(simulator.farm.owner.cash < 0) {
         this.cash.tint = this.tint.debt;
+    } else {
+        this.cash.tint = this.tint.default;
     }
 };
 
-GUI.prototype.showActions = function(id, position, actions) {
+GUI.prototype.showActions = function(obj, position, actions) {
     // if actions are visible, hide them, if not, create them
     if(this.properities.state == 'actions') {
         this.destroyActions();
     } else {
         this.properities.state = 'actions';
-        this.createActions(id, position, actions);
+        this.createActions(obj, position, actions);
     }
 };
 
-GUI.prototype.createActions = function(id, position, actions) {
+GUI.prototype.createActions = function(obj, position, actions) {
     // create action pointer and adjust its position
     this.actions = game.add.sprite(position.x, position.y, 'action_line');
     this.content = this.actions.addChild(game.add.sprite(0, 0));
@@ -120,42 +126,44 @@ GUI.prototype.createActions = function(id, position, actions) {
 
     // for every action, create action button
     for(var a in actions) {
-        var action = actions[a];
-        var x = 0;
-        var y = 0;
+        if(actions.hasOwnProperty(a)) {
+            var action = actions[a];
+            var x = 0;
+            var y = 0;
 
-        switch(action.position) {
-            case 'left':
-                x -= 0;
-                y += 25;
-                break;
+            switch(action.position) {
+                case 'left':
+                    x -= 0;
+                    y += 25;
+                    break;
 
-            case 'right':
-                x += 80;
-                y += 50;
-                break;
+                case 'right':
+                    x += 80;
+                    y += 50;
+                    break;
 
-            case 'top':
-                x += 18;
-                y -= 20;
-                break;
-        }
+                case 'top':
+                    x += 18;
+                    y -= 20;
+                    break;
+            }
 
-        if(action.visible) {
-            var cta =  this.content.addChild(game.add.sprite(x, y, action.icon));
-            cta.anchor.set(0.5);
-            cta.width = 50;
-            cta.height = 50;
+            if(action.visible) {
+                var cta =  this.content.addChild(game.add.sprite(x, y, action.icon));
+                cta.anchor.set(0.5);
+                cta.width = 50;
+                cta.height = 50;
 
-            if(action.enabled) {
-                cta.inputEnabled = true;
-                cta.input.useHandCursor = true;
-                cta.input.priorityID = 2;
-                cta.events.onInputOver.add(this.actionOver, {cta: cta, action: action, gui: this});
-                cta.events.onInputOut.add(this.actionOut, {cta: cta, action: action, gui: this});
-                cta.events.onInputDown.add(this.actionDown, {cta: cta, action: action, gui: this, object: Prefab.all[id]});
-            } else {
-                cta.tint = this.tint.disabled;
+                if(action.enabled) {
+                    cta.inputEnabled = true;
+                    cta.input.useHandCursor = true;
+                    cta.input.priorityID = 2;
+                    cta.events.onInputOver.add(this.actionOver, {cta: cta, action: action, gui: this});
+                    cta.events.onInputOut.add(this.actionOut, {cta: cta, action: action, gui: this});
+                    cta.events.onInputDown.add(this.actionDown, {cta: cta, action: action, gui: this, object: obj});
+                } else {
+                    cta.tint = this.tint.disabled;
+                }
             }
         }
     }
@@ -197,6 +205,7 @@ GUI.prototype.actionOut = function() {
 GUI.prototype.actionDown = function() {
     // on click call action callback
     this.action.callback(this.object);
+
     this.gui.destroyActions();
 };
 
@@ -234,18 +243,23 @@ GUI.prototype.toggleVolume = function() {
     }
 };
 
-GUI.prototype.showAlert = function(obj) {
-    if(!obj.alert) {
-        obj.alert = game.add.sprite(obj.position.x, obj.position.y - 25, 'alert');
-        obj.alert.anchor.setTo(0.5);
+GUI.prototype.showCost = function(cost, income, position) {
+    var styles = {
+        font: 'bold 16px Arial',
+        fill: '#FF0040',
+        wordWrap: false,
+        align: 'left'
+    };
 
-        game.add.tween(obj.alert.scale).to( { x: 1.5, y: 1.5 }, 1000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+    if(income) {
+        styles.fill = '#B3FF00';
+        cost = '+ ' + cost + 'zł';
+    } else {
+        styles.fill = '#FF0040';
+        cost = '- ' + cost + 'zł';
     }
-};
 
-GUI.prototype.hideAlert = function(obj) {
-    if(obj.alert) {
-        obj.alert.destroy();
-        obj.alert = null;
-    }
+    var text = game.add.text(position.x, position.y, cost, styles);
+    text.anchor.setTo(0.5);
+    game.add.tween(text).to( { y: position.y - 100, alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 0, 0, false);
 };

@@ -22,7 +22,8 @@ function FoodStorage(game, x, y, image, frame, group) {
             enabled: true,
             visible: true,
             callback: this.buyFood,
-            cost: 10,
+            price: 10,
+            income: false,
             sound: game.add.audio('food')
         }
     };
@@ -46,22 +47,6 @@ FoodStorage.prototype.init = function() {
     this.statsBar = new Stats(game, this.position.x, this.position.y, this, false, true);
 };
 
-FoodStorage.prototype.buyFood = function(o) {
-    // decrease owner money by food cost
-    simulator.farm.owner.cash -= (o.attributes.food.max - o.attributes.food.current) * o.actions.buyFood.cost;
-
-    // increase food lvl in a store
-    o.attributes.food.current = o.attributes.food.max;
-    o.actions.buyFood.enabled = false;
-    o.state.empty = false;
-
-    // hide alert
-    simulator.gui.hideAlert(o);
-
-    // play sound
-    o.actions.buyFood.sound.play();
-};
-
 FoodStorage.prototype.consumeFood = function(food) {
     // decrease food lvl in a store
     if(this.attributes.food.current - food <= this.attributes.food.min) {
@@ -69,10 +54,31 @@ FoodStorage.prototype.consumeFood = function(food) {
         this.state.empty = true;
 
         // show alert
-        simulator.gui.showAlert(this);
+        this.alert = new Alert(game, this.position.x, this.position.y, this);
+
     } else {
         this.attributes.food.current -= food;
     }
 
     this.actions.buyFood.enabled = true;
+};
+
+FoodStorage.prototype.buyFood = function(o) {
+    // decrease owner money by food price
+    var cost = (o.attributes.food.max - o.attributes.food.current) * o.actions.buyFood.price;
+    simulator.farm.owner.cash -= cost;
+    simulator.gui.showCost(cost, o.actions.buyFood.income, o.position);
+
+    // increase food lvl in a store
+    o.attributes.food.current = o.attributes.food.max;
+    o.actions.buyFood.enabled = false;
+    o.state.empty = false;
+
+    // hide alert
+    if(o.alert) {
+        o.alert.hideAlert();
+    }
+
+    // play sound
+    o.actions.buyFood.sound.play();
 };

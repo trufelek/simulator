@@ -23,7 +23,8 @@ function CarcassStorage(game, x, y, z, image, frame, group) {
             enabled: false,
             visible: true,
             callback: this.utilize,
-            cost: 5,
+            price: 5,
+            income: false,
             sound: game.add.audio('garbage')
         }
     };
@@ -61,7 +62,9 @@ CarcassStorage.prototype.stackCarcass = function() {
         this.state.full = true;
 
         // show alert
-        simulator.gui.showAlert(this);
+        if(!this.alert) {
+            this.alert = new Alert(game, this.position.x, this.position.y, this);
+        }
     } else {
         this.attributes.carcass.current += this.attributes.carcass.increase;
     }
@@ -76,7 +79,9 @@ CarcassStorage.prototype.utilize = function(o) {
     o.stats.carcass += o.attributes.carcass.current;
 
     // decrease owner cash
-    simulator.farm.owner.cash -= o.attributes.carcass.current * o.actions.utilization.cost;
+    var cost = o.attributes.carcass.current * o.actions.utilization.price;
+    simulator.farm.owner.cash -= cost;
+    simulator.gui.showCost(cost, o.actions.utilization.income, o.position);
 
     // decrease amount of carcass
     o.attributes.carcass.current = o.attributes.carcass.min;
@@ -91,5 +96,7 @@ CarcassStorage.prototype.utilize = function(o) {
     o.state.full = false;
 
     // hide alert
-    simulator.gui.hideAlert(o);
+    if(o.alert) {
+        o.alert.hideAlert();
+    }
 };

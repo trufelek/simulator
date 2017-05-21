@@ -52,7 +52,7 @@ Prefab.prototype.inputOut = function() {
 Prefab.prototype.click = function() {
     if(this.actions) {
         // show actions on click
-        simulator.gui.showActions(this.id, this.position, this.actions);
+        simulator.gui.showActions(this, this.position, this.actions);
     }
 };
 

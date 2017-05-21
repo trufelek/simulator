@@ -24,6 +24,7 @@ function FurStorage(game, x, y, z, image, frame, group) {
             callback: this.sell,
             visible: true,
             price: 10,
+            income: true,
             sound: game.add.audio('selling')
         }
     };
@@ -66,7 +67,9 @@ FurStorage.prototype.stackFur = function() {
         this.state.full = true;
 
         // show alert
-        simulator.gui.showAlert(this);
+        if(!this.alert) {
+            this.alert = new Alert(game, this.position.x, this.position.y, this);
+        }
     } else {
         this.attributes.fur.current += this.attributes.fur.increase;
     }
@@ -80,7 +83,9 @@ FurStorage.prototype.sell = function(o) {
     o.stats.fur += o.attributes.fur.current;
 
     // decrease owner cash
-    simulator.farm.owner.cash += o.attributes.fur.current * o.actions.sell.price;
+    var income = o.attributes.fur.current * o.actions.sell.price;
+    simulator.farm.owner.cash += income;
+    simulator.gui.showCost(income, o.actions.sell.income, o.position);
 
     // decrease amount of fur
     o.attributes.fur.current = o.attributes.fur.min;
@@ -95,5 +100,7 @@ FurStorage.prototype.sell = function(o) {
     o.state.full = false;
 
     // hide alert
-    simulator.gui.hideAlert(o);
+    if(o.alert) {
+        o.alert.hideAlert();
+    }
 };
