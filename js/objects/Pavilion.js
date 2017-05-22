@@ -12,6 +12,7 @@ function Pavilion(game, x, y, image, frame, group) {
     this.pavilionId = Pavilion.count;
     this.hidden = false;
     this.cages = [];
+    this.fullCages = [];
 
     this.timer = {
         clock: null,
@@ -19,7 +20,14 @@ function Pavilion(game, x, y, image, frame, group) {
         loops: []
     };
 
-    this.fullCages = [];
+    this.color = {
+        default: '0xffffff',
+        crowded: '0xEC6A6D'
+    };
+
+    this.state = {
+        crowded: false
+    };
 
     this.init();
 
@@ -49,6 +57,10 @@ Pavilion.prototype.init = function() {
         }
     }
 
+    // set pavilion state
+    this.state.crowded = this.fullCages.length > 8;
+
+    // hide pavilion on start
     game.time.events.add(Phaser.Timer.SECOND, this.hidePavilion, this);
 
     // create timer loop
@@ -56,12 +68,25 @@ Pavilion.prototype.init = function() {
 };
 
 Pavilion.prototype.updatePavilion = function() {
+    // update pavilion visibility
     if (game.input.activePointer.isDown) {
         if(game.camera.x < 200) {
             this.hidePavilion();
         } else {
             this.showPavilion();
         }
+    }
+
+    // update pavilion state
+    if(this.fullCages.length > 8) {
+        this.state.crowded = true;
+
+        if(simulator.events.probability[1] < 1) {
+            simulator.events.probability[1] += 0.01;
+            simulator.events.probability[1] = +simulator.events.probability[1].toFixed(2);
+        }
+    } else {
+        this.state.crowded = false;
     }
 };
 
@@ -70,6 +95,7 @@ Pavilion.prototype.hidePavilion = function() {
     game.add.tween(this).to({alpha: 0}, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
     this.hidden = true;
 
+    // show cages stats
     this.showCagesStats();
 };
 
@@ -85,6 +111,7 @@ Pavilion.prototype.showPavilion = function() {
     game.add.tween(this).to({alpha: 1}, 100, Phaser.Easing.Linear.None, true, 0, 0, false);
     this.hidden = false;
 
+    // hide cages stats
     this.hideCagesStats();
 };
 

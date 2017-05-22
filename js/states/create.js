@@ -22,6 +22,9 @@ var create = {
 
         // create owner
         simulator.farm.owner = new Owner();
+
+        // create events
+        simulator.events = new Events();
     },
 
     createZigZagMap : function() {

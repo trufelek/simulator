@@ -126,10 +126,9 @@ Cage.prototype.updateAttributes = function() {
         decrease += this.attributes.condition.hungry_decrease;
     }
 
-    if(this.pavilion.fullCages.length > 8) {
+    if(this.pavilion.state.crowded) {
         decrease += this.attributes.condition.crowded_decrease;
     }
-
 
     // decrease condition lvl
     if(this.attributes.condition.current - decrease <= this.attributes.condition.min) {

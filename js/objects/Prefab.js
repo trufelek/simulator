@@ -10,8 +10,11 @@ function Prefab(game, x, y, image, frame, group) {
     this.id = Prefab.count;
     this.position = {x: x, y: y};
     this.image = image;
-    this.highlight_tint = '0xfff401';
-    this.default_tint = '0xffffff';
+
+    this.highlight = {
+        hover: '0xfff401',
+        default: '0xffffff'
+    };
 
     // enable input
     this.inputEnabled = true;
@@ -41,12 +44,12 @@ Prefab.prototype.update = function() {
 
 Prefab.prototype.inputOver = function() {
     // highlight object on hover
-    this.tint = this.highlight_tint;
+    this.tint = this.highlight.hover;
 };
 
 Prefab.prototype.inputOut = function() {
     // remove highlight from object
-    this.tint = this.default_tint;
+    this.tint = this.highlight.default;
 };
 
 Prefab.prototype.click = function() {
