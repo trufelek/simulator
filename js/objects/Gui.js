@@ -66,16 +66,16 @@ GUI.prototype.createInterface = function() {
     this.cash.strokeThickness = 6;
 
     // draw time info
-    var clock = game.add.sprite(window.innerWidth - 65, 10, 'timer');
+    var clock = game.add.sprite(game.width - 65, 10, 'timer');
     clock.width = 40;
     clock.height = 40;
 
-    this.timer = game.add.text(window.innerWidth - clock.width - 100, 15, '00:00', this.interfaceStyles);
+    this.timer = game.add.text(game.width - clock.width - 100, 15, '00:00', this.interfaceStyles);
     this.timer.stroke = '#000000';
     this.timer.strokeThickness = 6;
 
     // draw music button
-    this.music = game.add.sprite(window.innerWidth - 210, 20, 'music_on');
+    this.music = game.add.sprite(game.width - 210, 20, 'music_on');
     this.music.inputEnabled = true;
     this.music.input.useHandCursor = true;
     this.music.height = 25;
@@ -83,7 +83,7 @@ GUI.prototype.createInterface = function() {
     this.music.events.onInputDown.add(this.toggleMusic, this);
 
     // draw sound button
-    this.volume = game.add.sprite(window.innerWidth - 175, 20, 'volume_on');
+    this.volume = game.add.sprite(game.width - 175, 20, 'volume_on');
     this.volume.inputEnabled = true;
     this.volume.input.useHandCursor = true;
     this.volume.height = 25;

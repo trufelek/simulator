@@ -1,6 +1,16 @@
 body {
-    background: #ebecec;
+    background: black;
+    height: 100vh;
+    width: 100vw;
     margin: 0;
+    overflow: hidden;
+}
+
+#game {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
     height: 100vh;
     width: 100vw;
 }
