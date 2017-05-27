@@ -19,6 +19,7 @@ function Prefab(game, x, y, image, frame, group) {
     // enable input
     this.inputEnabled = true;
     this.input.useHandCursor = true;
+    this.input.pixelPerfectOver = true;
 
     // add event listeners
     this.events.onInputDown.add(this.click, this);

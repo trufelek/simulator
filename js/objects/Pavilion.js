@@ -1,8 +1,9 @@
 /*
  Pavilion Class
 */
-Pavilion.all = {};
+Pavilion.all = [];
 Pavilion.count = 0;
+Pavilion.crowded = [];
 
 function Pavilion(game, x, y, image, frame, group) {
     Prefab.call(this, game, x, y, image, frame, group);
@@ -26,12 +27,13 @@ function Pavilion(game, x, y, image, frame, group) {
     };
 
     this.state = {
-        crowded: false
+        crowded: false,
+        epidemic: false
     };
 
     this.init();
 
-    Pavilion.all[this.pavilionId] = this;
+    Pavilion.all.push(this);
 }
 
 Pavilion.prototype = Object.create(Prefab.prototype);
@@ -58,7 +60,10 @@ Pavilion.prototype.init = function() {
     }
 
     // set pavilion state
-    this.state.crowded = this.fullCages.length > 8;
+    if(this.fullCages.length > 8) {
+        this.state.crowded = true;
+        Pavilion.crowded.push(this);
+    }
 
     // hide pavilion on start
     game.time.events.add(Phaser.Timer.SECOND, this.hidePavilion, this);
@@ -76,16 +81,21 @@ Pavilion.prototype.updatePavilion = function() {
             this.showPavilion();
         }
     }
+};
 
+Pavilion.prototype.updateState = function() {
     // update pavilion state
     if(this.fullCages.length > 8) {
         this.state.crowded = true;
 
-        if(simulator.events.probability[1] < 1) {
-            simulator.events.probability[1] += 0.01;
-            simulator.events.probability[1] = +simulator.events.probability[1].toFixed(2);
+        if(Pavilion.crowded.indexOf(this) == -1) {
+            Pavilion.crowded.push(this);
         }
     } else {
+        if(Pavilion.crowded.indexOf(this) > -1) {
+            Pavilion.crowded.splice(Pavilion.crowded.indexOf(this), 1);
+        }
+
         this.state.crowded = false;
     }
 };
@@ -103,6 +113,11 @@ Pavilion.prototype.showCagesStats = function() {
     this.cages.forEach(function(e, i){
         game.add.tween(e.statsBar.timerBar).to( { alpha: 1 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
         game.add.tween(e.statsBar.attrsBar).to( { alpha: 1 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
+
+        if(e.warning) {
+            game.add.tween(e.warning).to( { alpha: 1 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
+        }
+
         e.input.priorityID = 1;
     });
 };
@@ -119,6 +134,11 @@ Pavilion.prototype.hideCagesStats = function() {
     this.cages.forEach(function(e, i){
         game.add.tween(e.statsBar.timerBar).to( { alpha: 0 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
         game.add.tween(e.statsBar.attrsBar).to( { alpha: 0 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
+
+        if(e.warning) {
+            game.add.tween(e.warning).to( { alpha: 0 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
+        }
+
         e.input.priorityID = 0;
     });
 };

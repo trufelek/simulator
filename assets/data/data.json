@@ -58,6 +58,8 @@
     "volume_off": { "type": "image", "path": "assets/img/gui/volume_off.png" },
     "music_on": { "type": "image", "path": "assets/img/gui/music_on.png" },
     "music_off": { "type": "image", "path": "assets/img/gui/music_off.png" },
+    "warning_sick": { "type": "image", "path": "assets/img/gui/warning_sick.png" },
+    "warning_broken": { "type": "image", "path": "assets/img/gui/warning_broken.png" },
 
     "clock_icon": { "type": "image", "path": "assets/img/icons/clock_icon.png" },
     "condition_icon": { "type": "image", "path": "assets/img/icons/condition_icon.png" },
@@ -73,6 +75,7 @@
     "action_waste_icon": { "type": "image", "path": "assets/img/icons/action_waste_icon.png" },
     "action_incubate_icon": { "type": "image", "path": "assets/img/icons/action_incubate_icon.png" },
     "action_add_icon": { "type": "image", "path": "assets/img/icons/action_add_icon.png" },
+    "action_repair_icon": { "type": "image", "path": "assets/img/icons/action_repair_icon.png" },
     "event_disease": { "type": "image", "path": "assets/img/icons/event_disease.png" },
     "event_escape": { "type": "image", "path": "assets/img/icons/event_escape.png" },
     "event_inspection": { "type": "image", "path": "assets/img/icons/event_inspection.png" },
@@ -93,6 +96,8 @@
     "skinning": { "type": "sound", "path": "assets/sounds/skinning.wav" },
     "selling": { "type": "sound", "path": "assets/sounds/selling.wav" },
     "alert_beep": { "type": "sound", "path": "assets/sounds/alert.wav" },
-    "event": { "type": "sound", "path": "assets/sounds/event.wav" }
+    "event": { "type": "sound", "path": "assets/sounds/event.wav" },
+    "repair": { "type": "sound", "path": "assets/sounds/repair.wav" },
+    "heal": { "type": "sound", "path": "assets/sounds/heal.wav" }
   }
 }

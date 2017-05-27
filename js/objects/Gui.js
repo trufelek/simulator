@@ -16,6 +16,13 @@ function GUI() {
         align: 'left'
     };
 
+    this.penaltyStyles = {
+        font: 'bold 24px Arial',
+        fill: '#ff5855',
+        wordWrap: false,
+        align: 'left'
+    };
+
     this.progress = {
         tint: {
             full: '0x97d143',
@@ -262,4 +269,22 @@ GUI.prototype.showCost = function(cost, income, position) {
     var text = game.add.text(position.x, position.y, cost, styles);
     text.anchor.setTo(0.5);
     game.add.tween(text).to( { y: position.y - 100, alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 0, 0, false);
+};
+
+GUI.prototype.showPenalty = function(penalty) {
+    penalty = '-' + penalty + 'zł';
+    var text = game.add.text(85, 15, penalty, this.penaltyStyles);
+    game.add.tween(text).to( { y: 65, alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 0, 0, false);
+};
+
+GUI.prototype.showWarning = function(position, image) {
+    var warning = game.add.sprite(position.x, position.y - 25, image, 0);
+    warning.anchor.setTo(0.5);
+    game.add.tween(warning.scale).to( { x: 1.5, y: 1.5 }, 1000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+
+    return warning;
+};
+
+GUI.prototype.hideWarning = function(warning) {
+    warning.destroy();
 };

@@ -3,6 +3,9 @@
 */
 Cage.all = {};
 Cage.count = 0;
+Cage.full = [];
+Cage.sick = [];
+Cage.miserable = [];
 
 function Cage(game, x, y, image, frame, group, enabled, pavilion) {
     Prefab.call(this, game, x, y, image, frame, group);
@@ -30,16 +33,18 @@ function Cage(game, x, y, image, frame, group, enabled, pavilion) {
             callback: this.kill,
             sounds: [game.add.audio('kill1'),  game.add.audio('kill2'), game.add.audio('kill3')],
             cost: 500,
-            income: false,
+            income: false
         },
         heal: {
             label: 'Wylecz',
             icon: 'action_heal_icon',
-            position: 'right',
-            enabled: false,
+            position: 'top',
+            enabled: true,
             visible: false,
             callback: this.heal,
-            cost: 1000
+            cost: 1000,
+            income: false,
+            sound: game.add.audio('heal')
         },
         add: {
             label: 'Dodaj',
@@ -49,12 +54,23 @@ function Cage(game, x, y, image, frame, group, enabled, pavilion) {
             visible: enabled ? false : true,
             callback: this.addAnimals,
             sounds: [game.add.audio('add1'), game.add.audio('add2')]
+        },
+        repair: {
+            label: 'Napraw',
+            icon: 'action_repair_icon',
+            position: 'top',
+            enabled: true,
+            visible: false,
+            callback: this.repair,
+            cost: 1000,
+            income: false,
+            sound: game.add.audio('repair')
         }
     };
 
     this.state = {
         ready: false,
-        ill: false,
+        sick: false,
         enabled: enabled
     };
 
@@ -71,6 +87,7 @@ function Cage(game, x, y, image, frame, group, enabled, pavilion) {
     this.pavilionId = pavilion;
     this.pavilion = null;
     this.statsBar = null;
+    this.warning = null;
 
     Cage.all[Cage.count] = this;
     Cage.count ++;
@@ -88,6 +105,9 @@ Cage.prototype.init = function() {
     if(this.state.enabled) {
         // create timer
         this.createTimerEvent(this.timer.duration.minutes, this.timer.duration.seconds, true, this.cageReady);
+
+        // add to full cages
+        Cage.full.push(this);
     }
 
     // create timer loop
@@ -136,6 +156,13 @@ Cage.prototype.updateAttributes = function() {
     } else {
         this.attributes.condition.current -= decrease;
     }
+
+    // if condition low add to miserable
+    if(this.attributes.condition.current == this.attributes.condition.min) {
+        if(Cage.miserable.indexOf(this) == -1) {
+            Cage.miserable.push(this);
+        }
+    }
 };
 
 Cage.prototype.eatingFood = function() {
@@ -161,11 +188,6 @@ Cage.prototype.kill = function(cage) {
     }
 };
 
-Cage.prototype.heal = function(o) {
-    // heal action
-    console.log('heal');
-};
-
 Cage.prototype.addAnimals = function(cage) {
     if(Incubator.incubated.length) {
         // release incubator from incubated array
@@ -188,8 +210,14 @@ Cage.prototype.addAnimals = function(cage) {
         cage.actions.add.visible = false;
         cage.actions.kill.visible = true;
 
+        // add cage to all full cages
+        Cage.full.push(cage);
+
         // add cage to pavilion full cages
         cage.pavilion.fullCages.push(cage);
+
+        // update pavilion state
+        cage.pavilion.updateState();
 
         // create timer
         cage.createTimerEvent(cage.timer.duration.minutes, cage.timer.duration.seconds, true, cage.cageReady);
@@ -206,17 +234,137 @@ Cage.prototype.emptyCage = function() {
     // reset current cage
     this.state.enabled = false;
 
-    // set attributes to max
+    // set attributes to min
     this.attributes.condition.current = this.attributes.condition.min;
 
     //update actions
     this.actions.add.visible = true;
     this.actions.kill.visible = false;
 
+    // remove cage from all full cages
+    if(Cage.full.indexOf(this) > -1) {
+        Cage.full.splice(Cage.full.indexOf(this), 1);
+    }
+
     // remove cage from pavilion full cages
     if(this.pavilion.fullCages.indexOf(this) > -1) {
         this.pavilion.fullCages.splice(this.pavilion.fullCages.indexOf(this), 1);
     }
+
+    // remove if cage in miserable
+    if(Cage.miserable.indexOf(this) > -1) {
+        Cage.miserable.splice(Cage.miserable.indexOf(this), 1);
+    }
+
+    // update pavilion state
+    this.pavilion.updateState();
+};
+
+Cage.prototype.escapeFromCage = function() {
+    // destroy timer
+    this.resetTimer();
+
+    // change texture
+    this.loadTexture('cage_double_broken', 0, false);
+
+    // show warning
+    this.warning = simulator.gui.showWarning(this.position, 'warning_broken');
+
+    // reset current cage
+    this.state.enabled = false;
+
+    // set attributes to min
+    this.attributes.condition.current = this.attributes.condition.min;
+
+    //update actions
+    this.actions.repair.visible = true;
+    this.actions.kill.visible = false;
+
+    // remove cage from all full cages
+    if(Cage.full.indexOf(this) > -1) {
+        Cage.full.splice(Cage.full.indexOf(this), 1);
+    }
+
+    // remove cage from pavilion full cages
+    if(this.pavilion.fullCages.indexOf(this) > -1) {
+        this.pavilion.fullCages.splice(this.pavilion.fullCages.indexOf(this), 1);
+    }
+
+    // remove if cage in miserable
+    if(Cage.miserable.indexOf(this) > -1) {
+        Cage.miserable.splice(Cage.miserable.indexOf(this), 1);
+    }
+
+    // update pavilion state
+    this.pavilion.updateState();
+};
+
+Cage.prototype.repair = function(cage) {
+    // play sound
+    cage.actions.repair.sound.play();
+
+    // decrease owner cash
+    simulator.farm.owner.cash -= cage.actions.repair.cost;
+    simulator.gui.showCost(cage.actions.repair.cost, cage.actions.repair.income, cage.position);
+
+    // change texture
+    cage.loadTexture('cage_double_empty', 0, false);
+
+    // hide warning
+    simulator.gui.hideWarning(cage.warning);
+    cage.warning = null;
+
+    //update actions
+    cage.actions.add.visible = true;
+    cage.actions.repair.visible = false;
+};
+
+Cage.prototype.sick = function() {
+    // change texture
+    this.loadTexture('cage_double_sick', 0, false);
+
+    // show warning
+    this.warning = simulator.gui.showWarning(this.position, 'warning_sick');
+
+    // add to all sick cages
+    if(Cage.sick.indexOf(this) == -1) {
+        Cage.sick.push(this);
+    }
+
+    //update actions
+    this.actions.heal.visible = true;
+    this.actions.kill.visible = false;
+
+    // update state
+    this.state.sick = true;
+};
+
+Cage.prototype.heal = function(cage) {
+    // play sound
+    cage.actions.heal.sound.play();
+
+    // decrease owner cash
+    simulator.farm.owner.cash -= cage.actions.heal.cost;
+    simulator.gui.showCost(cage.actions.heal.cost, cage.actions.heal.income, cage.position);
+
+    // hide warning
+    simulator.gui.hideWarning(cage.warning);
+    cage.warning = null;
+
+    // remove cage from all sick cages
+    if(Cage.sick.indexOf(cage) > -1) {
+        Cage.sick.splice(Cage.sick.indexOf(cage), 1);
+    }
+
+    // change texture
+    cage.loadTexture('cage_double_full', 0, false);
+
+    //update actions
+    cage.actions.kill.visible = true;
+    cage.actions.heal.visible = false;
+
+    // update state
+    cage.state.sick = false;
 };
 
 Cage.prototype.cageReady = function() {
