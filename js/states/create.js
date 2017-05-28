@@ -14,6 +14,9 @@ var create = {
         // set world bounds
         game.world.setBounds(0, 0, simulator.settings.width, simulator.settings.height);
 
+        // limit active pointers to 1
+        game.input.maxPointers = 1;
+
         // create map
         this.createZigZagMap();
 

@@ -155,7 +155,7 @@ Events.prototype.updateProbabilities = function() {
 
 Events.prototype.showEventMessage = function() {
     // draw event message popup
-    this.popup = game.add.graphics(window.innerWidth / 2 - 250, window.innerHeight / 2 - 125);
+    this.popup = game.add.graphics(game.width / 2 - 250, game.height / 2 - 125);
     this.popup.alpha = 0;
     this.popup.beginFill(0xFFFFFF, 0.9);
     this.popup.lineStyle(2, 0x000000, 1);

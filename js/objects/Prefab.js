@@ -19,12 +19,15 @@ function Prefab(game, x, y, image, frame, group) {
     // enable input
     this.inputEnabled = true;
     this.input.useHandCursor = true;
-    this.input.pixelPerfectOver = true;
 
-    // add event listeners
+    // add click/touch event listeners
     this.events.onInputDown.add(this.click, this);
-    this.events.onInputOver.add(this.inputOver, this);
-    this.events.onInputOut.add(this.inputOut, this);
+
+    // if desktop add hover/out listeners
+    if(game.input.activePointer.isMouse) {
+        this.events.onInputOver.add(this.inputOver, this);
+        this.events.onInputOut.add(this.inputOut, this);
+    }
 
     this.statsBar = null;
 
