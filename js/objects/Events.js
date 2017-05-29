@@ -3,10 +3,10 @@
 */
 function Events() {
     this.events = [
+        {name:'intervention', penalty: 10000, icon: 'event_intervention', title: 'Interwencja Otwartych klatek!', message: 'W związku z ostatnimi wydarzeniami na fermie pojawiły się Otwarte Klatki!'},
         {name:'epidemic', penalty: 1000, icon: 'event_disease', title: 'W pawilonie wybuchła epidemia!', message: 'Chore lisy mogą zarazić pozostałe jeśli nie zareagujesz w porę.'},
         {name: 'escape', penalty: 100, icon: 'event_escape', title: 'Z jednej z twoich klatek uciekły lisy!', message: 'Jeżeli zapomnisz o karmieniu swoich lisów, to może się powtórzyć.'},
         {name:'disease', penalty: 100, icon: 'event_disease', title: 'W jednej z twoich klatek zachorowały lisy!', message: 'Pamiętaj, im więcej zwierząt w pawilonie tym łatwiej o choroby.'},
-        {name:'intervention', penalty: 10000, icon: 'event_intervention', title: 'Interwencja Otwartych klatek!', message: 'W związku z ostatnimi wydarzeniami na fermie pojawiły się Otwarte Klatki!'},
         {name:'inspection', penalty: 1000, icon: 'event_inspection', title: 'Niespodziewana kontrola!', message: 'Płacisz karę za nielegalną utylizacje śmieci.'}
     ];
 
@@ -57,15 +57,25 @@ Events.prototype.randomEvents = function() {
 
     if(event) {
         this.event = event;
+        var ok = false;
 
         switch(this.event.name) {
             case 'escape':
                 // choose random cage
-                var randomHungryCage =  Math.round(this.random(0, Cage.miserable.length - 1));
-                var hungryCage = Cage.miserable[randomHungryCage];
+                var miserableCages = Cage.miserable.filter(function(cage) {
+                    return cage.state.sick == false;
+                });
 
-                // empty cage
-                hungryCage.escapeFromCage();
+                if(miserableCages.length) {
+                    var randomHungryCage =  Math.round(this.random(0, miserableCages.length - 1));
+                    var hungryCage = miserableCages[randomHungryCage];
+
+                    // empty cage
+                    hungryCage.escapeFromCage();
+
+                    // event can happen
+                    ok = true;
+                }
 
                 break;
 
@@ -75,16 +85,21 @@ Events.prototype.randomEvents = function() {
                     return pavilion.state.epidemic == false;
                 });
 
-                // choose random crowded pavilion
-                var randomCrowdedPavilion = Math.round(this.random(0, crowdedPavilions.length - 1));
-                var crowdedPavilion = Pavilion.crowded[randomCrowdedPavilion];
+                if(crowdedPavilions.length) {
+                    // choose random crowded pavilion
+                    var randomCrowdedPavilion = Math.round(this.random(0, crowdedPavilions.length - 1));
+                    var crowdedPavilion = crowdedPavilions[randomCrowdedPavilion];
 
-                // choose random cage from crowded pavilion
-                var randomSickCage = Math.round(this.random(0, crowdedPavilion.fullCages.length - 1));
-                var sickCage = crowdedPavilion.fullCages[randomSickCage];
+                    // choose random cage from crowded pavilion
+                    var randomSickCage = Math.round(this.random(0, crowdedPavilion.fullCages.length - 1));
+                    var sickCage = crowdedPavilion.fullCages[randomSickCage];
 
-                // make cage sick
-                sickCage.sick();
+                    // make cage sick
+                    sickCage.sick();
+
+                    // event can happen
+                    ok = true;
+                }
 
                 break;
 
@@ -95,45 +110,59 @@ Events.prototype.randomEvents = function() {
 
                 // update sick cage pavilion
                 var epidemicPavilion = epidemicCage.pavilion;
-                epidemicPavilion.state.epidemic = true;
 
-                // make all cages in pavilion sick
-                for(var c in epidemicPavilion.fullCages) {
-                    if(epidemicPavilion.fullCages.hasOwnProperty(c)) {
-                        if(!epidemicPavilion.fullCages[c].state.sick) {
-                            epidemicPavilion.fullCages[c].sick();
+                if(epidemicPavilion.fullCages.length != epidemicPavilion.sickCages.length) {
+                    epidemicPavilion.state.epidemic = true;
+                    Pavilion.epidemic.push(epidemicPavilion);
+
+                    // make all cages in pavilion sick
+                    for(var c in epidemicPavilion.fullCages) {
+                        if(epidemicPavilion.fullCages.hasOwnProperty(c)) {
+                            if(!epidemicPavilion.fullCages[c].state.sick) {
+                                epidemicPavilion.fullCages[c].sick();
+                            }
                         }
                     }
+
+                    // event can happen
+                    ok = true;
                 }
+
+                break;
+
+            case 'intervention':
+                // event can happen
+                ok = true;
 
                 break;
         }
 
-        //increase probability of intervention
-        this.probability[3] += 0.25;
+        if(ok) {
+            //increase probability of intervention
+            if(this.probability[0] < 1) {
+                this.probability[0] += 0.2;
+            }
 
-        // penalty
-        simulator.farm.owner.cash -= this.event.penalty;
-        simulator.gui.showPenalty(this.event.penalty);
+            // penalty
+            simulator.farm.owner.cash -= this.event.penalty;
+            simulator.gui.showPenalty(this.event.penalty);
 
-        this.sound.play();
-        this.showEventMessage();
+            this.sound.play();
+            this.showEventMessage();
+
+        } else {
+            // if event can't happen, cancel it
+            var index = this.events.indexOf(this.event);
+            this.probability[index] = 0.0;
+            this.event = null;
+        }
+
     }
 };
 
 Events.prototype.updateProbabilities = function() {
     // epidemic probability
-    if(Cage.sick.length) {
-        if(this.probability[0] < 1) {
-            this.probability[0] += 0.005;
-            this.probability[0] = +this.probability[0].toFixed(3);
-        }
-    } else {
-        this.probability[0] = 0;
-    }
-
-    // escape probability
-    if(Cage.miserable.length) {
+    if(Cage.sick.length && !Pavilion.epidemic.length) {
         if(this.probability[1] < 1) {
             this.probability[1] += 0.005;
             this.probability[1] = +this.probability[1].toFixed(3);
@@ -142,14 +171,24 @@ Events.prototype.updateProbabilities = function() {
         this.probability[1] = 0;
     }
 
-    // disease probability
-    if(Pavilion.crowded.length) {
+    // escape probability
+    if(Cage.miserable.length) {
         if(this.probability[2] < 1) {
-            this.probability[2] += 0.01;
+            this.probability[2] += 0.005;
             this.probability[2] = +this.probability[2].toFixed(3);
         }
     } else {
         this.probability[2] = 0;
+    }
+
+    // disease probability
+    if(Pavilion.crowded.length) {
+        if(this.probability[3] < 1) {
+            this.probability[3] += 0.01;
+            this.probability[3] = +this.probability[3].toFixed(3);
+        }
+    } else {
+        this.probability[3] = 0;
     }
 };
 
@@ -228,4 +267,52 @@ Events.prototype.getRandomEvent = function() {
 
 Events.prototype.random = function(min, max) {
     return Math.random() * (max - min) + min;
+};
+
+Events.prototype.gameOver = function() {
+    // start game over state
+    this.sound.play();
+
+    var background, gameover, restart;
+
+    // create game over screen
+    background = game.add.graphics(0, 0);
+    background.alpha = 0;
+    background.beginFill(0x000000, 0.8);
+    background.drawRect(0, 0, game.width, game.height);
+    background.endFill();
+    background.fixedToCamera = true;
+
+    // fade in game over screen
+    game.add.tween(background).to( { alpha: 1 }, 2000, Phaser.Easing.Linear.None, true, 0, 0, false);
+
+    this.sound.onStop.add(function() {
+        // create logo and buttons
+        gameover = game.add.sprite(game.width / 2, game.height / 2 - 50, 'gameover');
+        gameover.anchor.setTo(0.5);
+
+        restart = game.add.sprite(game.width / 2, game.height / 2 + 150, 'restart_hover');
+        restart.anchor.setTo(0.5);
+        restart.inputEnabled = true;
+        restart.input.useHandCursor = true;
+
+        // pause game
+        game.paused = true;
+    }, this);
+
+    game.input.onDown.add(function(event) {
+        var x = restart.x - restart.width / 2;
+        var y = restart.y - restart.height / 2;
+        var w = restart.width;
+        var h = restart.height;
+
+        if(event.x > x && event.x < x + w && event.y > y && event.y < y + h) {
+            // unpause game
+            game.paused = false;
+
+            // restart current state
+            game.state.restart();
+        }
+
+    }, self);
 };

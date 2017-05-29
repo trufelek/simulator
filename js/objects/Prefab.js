@@ -100,3 +100,8 @@ Prefab.prototype.resetTimer = function() {
 Prefab.prototype.getRandomInt = function(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
+Prefab.reset = function() {
+    Prefab.all = {};
+    Prefab.count = 0;
+};

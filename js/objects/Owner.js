@@ -2,7 +2,8 @@
  Owner Class
  */
 function Owner () {
-    this.cash = 100000;
+    this.cash = 10000;
+    this.minCash = -5000;
 
     this.timer = {
         clock: null,
@@ -11,7 +12,7 @@ function Owner () {
     };
 
     this.init();
-};
+}
 
 Owner.prototype.init = function() {
     // create timer
@@ -21,12 +22,16 @@ Owner.prototype.init = function() {
 Owner.prototype.createTimer = function() {
     // create timer & timer event & timer loop
     this.timer.clock = game.time.create();
-    this.timer.loop = game.time.events.loop(Phaser.Timer.SECOND, this.updateCash, this);
+    this.timer.loop = game.time.events.loop(Phaser.Timer.SECOND * 5, this.updateCash, this);
 
     //start timer
     this.timer.clock.start();
 };
 
 Owner.prototype.updateCash = function() {
-    this.cash -= 1;
+    if(this.cash > this.minCash) {
+        this.cash -= 1;
+    } else {
+        simulator.events.gameOver();
+    }
 };

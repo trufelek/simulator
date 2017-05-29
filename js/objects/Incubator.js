@@ -94,3 +94,9 @@ Incubator.dismissAnimals = function() {
     // change texture
     incubator.loadTexture('incubator', 0, false);
 };
+
+Incubator.reset = function() {
+    Incubator.all = {};
+    Incubator.count = 0;
+    Incubator.incubated = [];
+};

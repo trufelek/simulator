@@ -116,3 +116,9 @@ SkinningStation.prototype.skinning = function() {
         this.timer.clock.start();
     }
 };
+
+SkinningStation.reset = function() {
+    SkinningStation.all = {};
+    SkinningStation.count = 0;
+    SkinningStation.ready = [];
+};

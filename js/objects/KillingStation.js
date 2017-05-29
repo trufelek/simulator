@@ -121,3 +121,9 @@ KillingStation.prototype.killing = function() {
         this.timer.clock.start();
     }
 };
+
+KillingStation.reset = function() {
+    KillingStation.all = {};
+    KillingStation.count = 0;
+    KillingStation.ready = [];
+};

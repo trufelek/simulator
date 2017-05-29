@@ -331,6 +331,11 @@ Cage.prototype.sick = function() {
         Cage.sick.push(this);
     }
 
+    // add to pavilion sick cages
+    if(this.pavilion.sickCages.indexOf(this) == -1) {
+        this.pavilion.sickCages.push(this);
+    }
+
     //update actions
     this.actions.heal.visible = true;
     this.actions.kill.visible = false;
@@ -351,9 +356,23 @@ Cage.prototype.heal = function(cage) {
     simulator.gui.hideWarning(cage.warning);
     cage.warning = null;
 
-    // remove cage from all sick cages
+    // remove from all sick cages
     if(Cage.sick.indexOf(cage) > -1) {
         Cage.sick.splice(Cage.sick.indexOf(cage), 1);
+    }
+
+    // remove from pavilion sick cages
+    if(cage.pavilion.sickCages.indexOf(cage) > -1) {
+        cage.pavilion.sickCages.splice(cage.pavilion.sickCages.indexOf(cage), 1);
+    }
+
+    // if there is no sick cages remove pavilion from epidemic group and update its state
+    if(!cage.pavilion.sickCages.length) {
+        if(Pavilion.epidemic.indexOf(cage.pavilion) > -1) {
+            Pavilion.epidemic.splice(Cage.sick.indexOf(Pavilion.epidemic.indexOf(cage.pavilion)), 1);
+        }
+
+        cage.pavilion.state.epidemic = false;
     }
 
     // change texture
@@ -371,4 +390,12 @@ Cage.prototype.cageReady = function() {
     // cage ready to kill
     this.actions.kill.enabled = true;
     this.state.ready = true;
+};
+
+Cage.reset = function() {
+    Cage.all = {};
+    Cage.count = 0;
+    Cage.full = [];
+    Cage.sick = [];
+    Cage.miserable = [];
 };

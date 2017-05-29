@@ -161,5 +161,46 @@ var create = {
         } else {
             game.draggingPoint = null;
         }
+    },
+
+    shutdown: function() {
+        // reset simulator object
+        simulator.music.stop();
+
+        // reset simulator farm
+        simulator.farm = {
+            cages: [],
+            incubators: [],
+            pavilions: [],
+            skinningStations: [],
+            killingStations: [],
+            slaughterhouse: null,
+            foodStorage: null,
+            furStorage: null,
+            carcassStorage: null,
+            office: null,
+            owner: null
+        };
+
+        // reset prefabs
+        Prefab.reset();
+
+        // reset cages
+        Cage.reset();
+
+        // reset incubators
+        Incubator.reset();
+
+        // reset pavilions
+        Pavilion.reset();
+
+        // reset skinning stations
+        SkinningStation.reset();
+
+        // reset killing stations
+        KillingStation.reset();
+
+        // reset game world
+        game.world.removeAll();
     }
 };

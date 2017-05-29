@@ -4,6 +4,7 @@
 Pavilion.all = [];
 Pavilion.count = 0;
 Pavilion.crowded = [];
+Pavilion.epidemic = [];
 
 function Pavilion(game, x, y, image, frame, group) {
     Prefab.call(this, game, x, y, image, frame, group);
@@ -14,6 +15,7 @@ function Pavilion(game, x, y, image, frame, group) {
     this.hidden = false;
     this.cages = [];
     this.fullCages = [];
+    this.sickCages = [];
 
     this.timer = {
         clock: null,
@@ -141,4 +143,11 @@ Pavilion.prototype.hideCagesStats = function() {
 
         e.input.priorityID = 0;
     });
+};
+
+Pavilion.reset = function() {
+    Pavilion.all = [];
+    Pavilion.count = 0;
+    Pavilion.crowded = [];
+    Pavilion.epidemic = [];
 };
