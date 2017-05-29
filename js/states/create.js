@@ -47,6 +47,7 @@ var create = {
         var background = game.add.sprite(0, 0, 'background', 0, groundGroup);
         background.inputEnabled = true;
         background.input.useHandCursor = true;
+        background.events.onInputOver.add(Prefab.undoHover, this);
 
         // draw map procedurally
         for(var i = 0; i < simulator.map.length ; i++) {
@@ -166,6 +167,7 @@ var create = {
     shutdown: function() {
         // reset simulator object
         simulator.music.stop();
+        game.sound.stopAll();
 
         // reset simulator farm
         simulator.farm = {

@@ -2,7 +2,7 @@
  Owner Class
  */
 function Owner () {
-    this.cash = 10000;
+    this.cash = 100000;
     this.minCash = -5000;
 
     this.timer = {

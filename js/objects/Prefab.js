@@ -105,3 +105,11 @@ Prefab.reset = function() {
     Prefab.all = {};
     Prefab.count = 0;
 };
+
+Prefab.undoHover = function() {
+    for(var p in Prefab.all) {
+        if(Prefab.all.hasOwnProperty(p)) {
+            Prefab.all[p].tint = Prefab.all[p].highlight.default;
+        }
+    }
+};

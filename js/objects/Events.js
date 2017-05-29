@@ -301,17 +301,19 @@ Events.prototype.gameOver = function() {
     }, this);
 
     game.input.onDown.add(function(event) {
-        var x = restart.x - restart.width / 2;
-        var y = restart.y - restart.height / 2;
-        var w = restart.width;
-        var h = restart.height;
+        if(restart) {
+            var x = restart.x - restart.width / 2;
+            var y = restart.y - restart.height / 2;
+            var w = restart.width;
+            var h = restart.height;
 
-        if(event.x > x && event.x < x + w && event.y > y && event.y < y + h) {
-            // unpause game
-            game.paused = false;
+            if(event.x > x && event.x < x + w && event.y > y && event.y < y + h) {
+                // unpause game
+                game.paused = false;
 
-            // restart current state
-            game.state.restart();
+                // restart current state
+                game.state.restart();
+            }
         }
 
     }, self);
