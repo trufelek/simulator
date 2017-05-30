@@ -9,6 +9,13 @@ function GUI() {
         align: 'left'
     };
 
+    this.heading = {
+        font: 'bold 16px Arial',
+        fill: '#000000',
+        wordWrap: false,
+        align: 'left'
+    };
+
     this.interfaceStyles = {
         font: 'bold 24px Arial',
         fill: '#F5F5F5',
@@ -49,6 +56,8 @@ function GUI() {
     this.cash = null;
     this.volume = null;
     this.music = null;
+
+    this.upgradeSound = game.add.audio('upgrade');
 
     this.createInterface();
 }
@@ -145,8 +154,8 @@ GUI.prototype.createActions = function(obj, position, actions) {
                     break;
 
                 case 'right':
-                    x += 80;
-                    y += 50;
+                    x += 50;
+                    y += 35;
                     break;
 
                 case 'top':
@@ -287,4 +296,82 @@ GUI.prototype.showWarning = function(position, image) {
 
 GUI.prototype.hideWarning = function(warning) {
     warning.destroy();
+};
+
+GUI.prototype.showUpgradeOptions = function(obj) {
+    // draw options background
+    var popup = game.add.graphics(game.width / 2 - 250, game.height / 2 - 125);
+    popup.alpha = 0;
+    popup.beginFill(0xFFFFFF, 0.9);
+    popup.lineStyle(2, 0x000000, 1);
+    popup.drawRect(0, 0, 500, 250);
+    popup.endFill();
+    popup.inputEnabled = true;
+    popup.input.priorityID = 4;
+    popup.fixedToCamera = true;
+
+    // fade in game over screen
+    game.add.tween(popup).to( { alpha: 1 }, 250, Phaser.Easing.Linear.None, true, 0, 0, false);
+
+    var i = 25;
+
+    for(var u in obj.upgrades) {
+        if(obj.upgrades.hasOwnProperty(u)) {
+            var upgrade = obj.upgrades[u];
+
+            var row = popup.addChild(game.add.sprite(25, i));
+            var title = row.addChild(game.add.text(0, 0, upgrade.title, this.heading));
+            var desc = row.addChild(game.add.text(0, 25, upgrade.desc, this.styles));
+            var button = row.addChild(game.add.sprite(popup.width - 150, 25, 'upgrade_button'));
+            button.anchor.setTo(0.5, 0.5);
+            button.scale.setTo(0.4, 0.4);
+            button.id = u;
+
+            if(upgrade.enabled && !upgrade.active && simulator.farm.owner.cash >= upgrade.price) {
+                button.inputEnabled = true;
+                button.input.priorityID = 5;
+                button.input.useHandCursor = true;
+            }
+
+            if(upgrade.active) {
+                button.tint = this.progress.tint.full;
+            } else {
+                button.tint = button.inputEnabled ? this.tint.default: this.tint.disabled;
+            }
+
+            button.events.onInputDown.add(function(event) {
+                this.upgradeSound.play();
+
+                obj.upgrade(event.id);
+
+                var scaleUp = game.add.tween(event.scale).to( { x: 0.7, y: 0.7 }, 250, Phaser.Easing.Bounce.InOut);
+                var scaleDown = game.add.tween(event.scale).to( { x: 0.4, y: 0.4 }, 250, Phaser.Easing.Bounce.InOut);
+
+                scaleUp.chain(scaleDown);
+                scaleUp.start();
+
+                scaleDown.onComplete.add(function() {
+                    event.tint = this.progress.tint.full;
+                }, this);
+
+                event.inputEnabled = false;
+            }, this);
+
+            var close = popup.addChild(game.add.sprite(popup.width - 55, 5, 'close', 0));
+            close.width = 50;
+            close.height = 50;
+            close.inputEnabled = true;
+            close.input.priorityID = 5;
+            close.input.useHandCursor = true;
+            close.events.onInputDown.add(function() {
+                this.hideUpgradeOptions(popup);
+            }, this);
+
+            i+= 75;
+        }
+    }
+};
+
+GUI.prototype.hideUpgradeOptions = function(popup) {
+    popup.destroy();
 };

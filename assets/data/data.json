@@ -79,11 +79,13 @@
     "action_incubate_icon": { "type": "image", "path": "assets/img/icons/action_incubate_icon.png" },
     "action_add_icon": { "type": "image", "path": "assets/img/icons/action_add_icon.png" },
     "action_repair_icon": { "type": "image", "path": "assets/img/icons/action_repair_icon.png" },
+    "action_upgrade_icon": { "type": "image", "path": "assets/img/icons/action_upgrade_icon.png" },
     "event_disease": { "type": "image", "path": "assets/img/icons/event_disease.png" },
     "event_escape": { "type": "image", "path": "assets/img/icons/event_escape.png" },
     "event_inspection": { "type": "image", "path": "assets/img/icons/event_inspection.png" },
     "event_intervention": { "type": "image", "path": "assets/img/icons/event_intervention.png" },
     "close": { "type": "image", "path": "assets/img/icons/close.png" },
+    "upgrade_button": { "type": "image", "path": "assets/img/icons/upgrade_button.png" },
 
     "background_music": { "type": "sound", "path": "assets/sounds/background.wav" },
     "food": { "type": "sound", "path": "assets/sounds/food.wav" },
@@ -101,6 +103,7 @@
     "alert_beep": { "type": "sound", "path": "assets/sounds/alert.wav" },
     "event": { "type": "sound", "path": "assets/sounds/event.wav" },
     "repair": { "type": "sound", "path": "assets/sounds/repair.wav" },
-    "heal": { "type": "sound", "path": "assets/sounds/heal.wav" }
+    "heal": { "type": "sound", "path": "assets/sounds/heal.wav" },
+    "upgrade": { "type": "sound", "path": "assets/sounds/upgrade.wav" }
   }
 }

@@ -1,5 +1,5 @@
 // create game object
-var game = new Phaser.Game(1050, 600, Phaser.CANVAS, 'game');
+var game = new Phaser.Game(1080, 600, Phaser.CANVAS, 'game');
 
 
 // simulator object
