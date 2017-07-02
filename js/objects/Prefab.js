@@ -66,7 +66,7 @@ Prefab.prototype.click = function() {
 Prefab.prototype.createTimerEvent = function(minutes, seconds, autostart, callback) {
     // create timer event
     this.timer.clock = game.time.create();
-    this.timer.event  = this.timer.clock.add(Phaser.Timer.MINUTE * minutes + Phaser.Timer.SECOND * seconds, callback, this);
+    this.timer.event = this.timer.clock.add(Phaser.Timer.MINUTE * minutes + Phaser.Timer.SECOND * seconds, callback, this);
 
     if(autostart) {
         this.timer.clock.start();

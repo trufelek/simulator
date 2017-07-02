@@ -64,13 +64,6 @@
     "warning_sick": { "type": "image", "path": "assets/img/gui/warning_sick.png" },
     "warning_broken": { "type": "image", "path": "assets/img/gui/warning_broken.png" },
 
-    "clock_icon": { "type": "image", "path": "assets/img/icons/clock_icon.png" },
-    "condition_icon": { "type": "image", "path": "assets/img/icons/condition_icon.png" },
-    "food_icon": { "type": "image", "path": "assets/img/icons/food_icon.png" },
-    "fur_icon": { "type": "image", "path": "assets/img/icons/fur_icon.png" },
-    "kill_stock_icon": { "type": "image", "path": "assets/img/icons/kill_stock_icon.png" },
-
-    "action_feed_icon": { "type": "image", "path": "assets/img/icons/action_feed_icon.png" },
     "action_kill_icon": { "type": "image", "path": "assets/img/icons/action_kill_icon.png" },
     "action_heal_icon": { "type": "image", "path": "assets/img/icons/action_heal_icon.png" },
     "action_buy_icon": { "type": "image", "path": "assets/img/icons/action_buy_icon.png" },
