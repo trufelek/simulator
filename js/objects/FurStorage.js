@@ -26,8 +26,46 @@ function FurStorage(game, x, y, z, image, frame, group) {
             price: 10,
             income: true,
             sound: game.add.audio('selling')
+        },
+        upgrade: {
+            label: 'Upgrade',
+            icon: 'action_upgrade_icon',
+            position: 'right',
+            enabled: true,
+            visible: true,
+            callback: this.chooseUpgrade
         }
     };
+
+    this.upgrades = [
+        {
+            title: 'Trochę większa pojemność (1000zł)',
+            desc: 'Oskóruj 100 zwierząt.',
+            newMax: 150,
+            enabled: false,
+            active: false,
+            price: 1000,
+            condition: 100
+        },
+        {
+            title: 'Średnio większa pojemność (5000zł)',
+            desc: 'Oskóruj 250 zwierząt.',
+            newMax: 200,
+            enabled: false,
+            active: false,
+            price: 5000,
+            condition: 250
+        },
+        {
+            title: 'Znacznie większa pojemność (7500zł)',
+            desc: 'Oskóruj 500 zwierząt.',
+            newMax: 300,
+            enabled: false,
+            active: false,
+            price: 7500,
+            condition: 500
+        }
+    ];
 
     this.state = {
         full: false
@@ -102,5 +140,45 @@ FurStorage.prototype.sell = function(o) {
     // hide alert
     if(o.alert) {
         o.alert.hideAlert();
+    }
+};
+
+FurStorage.prototype.chooseUpgrade = function(o) {
+    // update upgrades
+    for(var u in o.upgrades) {
+        if(o.upgrades.hasOwnProperty(u)) {
+            var upgrade = o.upgrades[u];
+            upgrade.description = upgrade.desc + ' (' + simulator.farm.skinned + '/' + upgrade.condition  + ')';
+
+            if(upgrade.condition <= simulator.farm.skinned && simulator.farm.owner.cash >= upgrade.price) {
+                if(u == 0 || o.upgrades[u - 1].active) {
+                    upgrade.enabled = true;
+                }
+            } else {
+                upgrade.enabled = false;
+            }
+        }
+    }
+
+    // show upgrade options
+    simulator.gui.showUpgradeOptions(o);
+};
+
+FurStorage.prototype.upgrade = function(u) {
+    // update upgrade
+    var upgrade = this.upgrades[u];
+    upgrade.active = true;
+    upgrade.enabled = false;
+
+    // decrease owner cash by upgrade price
+    simulator.farm.owner.cash -= upgrade.price;
+    simulator.gui.showCost(upgrade.price, false, this.position);
+
+    // upgrade carcass storage
+    this.attributes.fur.max = upgrade.newMax;
+
+    // hide alert
+    if(this.alert) {
+        this.alert.hideAlert();
     }
 };

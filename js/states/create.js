@@ -181,7 +181,10 @@ var create = {
             furStorage: null,
             carcassStorage: null,
             office: null,
-            owner: null
+            owner: null,
+            incubated: 0,
+            killed: 0,
+            skinned: 0
         };
 
         // reset prefabs

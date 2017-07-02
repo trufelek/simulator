@@ -16,7 +16,10 @@ simulator.farm = {
     furStorage: null,
     carcassStorage: null,
     office: null,
-    owner: null
+    owner: null,
+    incubated: 0,
+    killed: 0,
+    skinned: 0
 };
 
 // game states

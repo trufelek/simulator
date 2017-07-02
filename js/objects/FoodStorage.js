@@ -38,28 +38,31 @@ function FoodStorage(game, x, y, image, frame, group) {
 
     this.upgrades = [
         {
-            title: 'Trochę większa pojemność',
-            desc: 'Ulepsz magazyn żywności. Koszt 10 000 zł',
-            newMax: 700,
-            enabled: true,
+            title: 'Trochę większa pojemność (10 000zł)',
+            desc: 'Wyhoduj 100 zwierząt.',
+            newMax: 750,
+            enabled: false,
             active: false,
-            price: 10000
+            price: 10000,
+            condition: 100
         },
         {
-            title: 'Średnio większa pojemność',
-            desc: 'Ulepsz magazyn żywności. Koszt 50 000 zł',
+            title: 'Średnio większa pojemność (50 000zł)',
+            desc: 'Wyhoduj 250 zwierząt.',
             newMax: 1000,
             enabled: false,
             active: false,
-            price: 50000
+            price: 50000,
+            condition: 250
         },
         {
-            title: 'Znacznie większa pojemność',
-            desc: 'Ulepsz magazyn żywności. Koszt 100 000 zł',
+            title: 'Znacznie większa pojemność (75 000zł)',
+            desc: 'Wyhoduj 500 zwierząt.',
             newMax: 1500,
             enabled: false,
             active: false,
-            price: 100000
+            price: 75000,
+            condition: 500
         }
     ];
 
@@ -118,7 +121,41 @@ FoodStorage.prototype.buyFood = function(o) {
     o.actions.buyFood.sound.play();
 };
 
+
+FoodStorage.prototype.addFood = function(amount) {
+    // increase food lvl in a store
+    if(this.attributes.food.current + (5 * amount) > this.attributes.food.max) {
+        this.attributes.food.current = this.attributes.food.max;
+    } else {
+        this.attributes.food.current += 5 * amount;
+    }
+
+    this.actions.buyFood.enabled = false;
+    this.state.empty = false;
+
+    // hide alert
+    if(this.alert) {
+        this.alert.hideAlert();
+    }
+};
+
 FoodStorage.prototype.chooseUpgrade = function(o) {
+    // update upgrades
+    for(var u in o.upgrades) {
+        if(o.upgrades.hasOwnProperty(u)) {
+            var upgrade = o.upgrades[u];
+            upgrade.description = upgrade.desc + ' (' + simulator.farm.incubated + '/' + upgrade.condition  + ')';
+
+            if(upgrade.condition <= simulator.farm.incubated && simulator.farm.owner.cash >= upgrade.price) {
+                if(u == 0 || o.upgrades[u - 1].active) {
+                    upgrade.enabled = true;
+                }
+            } else {
+                upgrade.enabled = false;
+            }
+        }
+    }
+
     // show upgrade options
     simulator.gui.showUpgradeOptions(o);
 };
@@ -135,16 +172,4 @@ FoodStorage.prototype.upgrade = function(u) {
 
     // upgrade food storage
     this.attributes.food.max = upgrade.newMax;
-
-    // enable next upgrade
-    var index = parseInt(u);
-
-    if(index + 1 < this.upgrades.length) {
-        var next = index + 1;
-        var nextUpgrade = this.upgrades[next];
-
-        if(simulator.farm.owner.cash >= nextUpgrade.price) {
-            nextUpgrade.enabled = true;
-        }
-    }
 };

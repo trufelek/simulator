@@ -73,10 +73,12 @@
     "action_add_icon": { "type": "image", "path": "assets/img/icons/action_add_icon.png" },
     "action_repair_icon": { "type": "image", "path": "assets/img/icons/action_repair_icon.png" },
     "action_upgrade_icon": { "type": "image", "path": "assets/img/icons/action_upgrade_icon.png" },
+    "action_recycle_icon": { "type": "image", "path": "assets/img/icons/action_recycle_icon.png" },
     "event_disease": { "type": "image", "path": "assets/img/icons/event_disease.png" },
     "event_escape": { "type": "image", "path": "assets/img/icons/event_escape.png" },
     "event_inspection": { "type": "image", "path": "assets/img/icons/event_inspection.png" },
     "event_intervention": { "type": "image", "path": "assets/img/icons/event_intervention.png" },
+    "event_protests": { "type": "image", "path": "assets/img/icons/event_protests.png" },
     "close": { "type": "image", "path": "assets/img/icons/close.png" },
     "upgrade_button": { "type": "image", "path": "assets/img/icons/upgrade_button.png" },
 

@@ -89,6 +89,7 @@ SkinningStation.prototype.endSkinning = function() {
 
     // count killed animals
     this.stats.skinned += this.attributes.stack.decrease;
+    simulator.farm.skinned += this.attributes.stack.decrease;
 
     // play sound
     this.sound.play();

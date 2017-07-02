@@ -149,8 +149,8 @@ GUI.prototype.createActions = function(obj, position, actions) {
 
             switch(action.position) {
                 case 'left':
-                    x -= 0;
-                    y += 25;
+                    x -= 25;
+                    y += 35;
                     break;
 
                 case 'right':
@@ -321,13 +321,13 @@ GUI.prototype.showUpgradeOptions = function(obj) {
 
             var row = popup.addChild(game.add.sprite(25, i));
             var title = row.addChild(game.add.text(0, 0, upgrade.title, this.heading));
-            var desc = row.addChild(game.add.text(0, 25, upgrade.desc, this.styles));
+            var desc = row.addChild(game.add.text(0, 25, upgrade.description, this.styles));
             var button = row.addChild(game.add.sprite(popup.width - 150, 25, 'upgrade_button'));
             button.anchor.setTo(0.5, 0.5);
             button.scale.setTo(0.4, 0.4);
             button.id = u;
 
-            if(upgrade.enabled && !upgrade.active && simulator.farm.owner.cash >= upgrade.price) {
+            if(upgrade.enabled && !upgrade.active) {
                 button.inputEnabled = true;
                 button.input.priorityID = 5;
                 button.input.useHandCursor = true;

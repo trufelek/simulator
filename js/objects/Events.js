@@ -3,14 +3,15 @@
 */
 function Events() {
     this.events = [
-        {name:'intervention', penalty: 10000, icon: 'event_intervention', title: 'Interwencja Otwartych klatek!', message: 'W związku z ostatnimi wydarzeniami na fermie pojawiły się Otwarte Klatki!'},
-        {name:'epidemic', penalty: 1000, icon: 'event_disease', title: 'W pawilonie wybuchła epidemia!', message: 'Chore lisy mogą zarazić pozostałe jeśli nie zareagujesz w porę.'},
+        {name: 'intervention', penalty: 10000, icon: 'event_intervention', title: 'Interwencja Otwartych klatek!', message: 'W związku z ostatnimi wydarzeniami na fermie pojawiły się Otwarte Klatki!'},
+        {name: 'epidemic', penalty: 1000, icon: 'event_disease', title: 'W pawilonie wybuchła epidemia!', message: 'Chore lisy mogą zarazić pozostałe jeśli nie zareagujesz w porę.'},
         {name: 'escape', penalty: 100, icon: 'event_escape', title: 'Z jednej z twoich klatek uciekły lisy!', message: 'Jeżeli zapomnisz o karmieniu swoich lisów, to może się powtórzyć.'},
-        {name:'disease', penalty: 100, icon: 'event_disease', title: 'W jednej z twoich klatek zachorowały lisy!', message: 'Pamiętaj, im więcej zwierząt w pawilonie tym łatwiej o choroby.'},
-        {name:'inspection', penalty: 1000, icon: 'event_inspection', title: 'Niespodziewana kontrola!', message: 'Płacisz karę za nielegalną utylizacje śmieci.'}
+        {name: 'disease', penalty: 100, icon: 'event_disease', title: 'W jednej z twoich klatek zachorowały lisy!', message: 'Pamiętaj, im więcej zwierząt w pawilonie tym łatwiej o choroby.'},
+        {name: 'inspection', penalty: 1000, icon: 'event_inspection', title: 'Niespodziewana kontrola weterynaryjna!', message: 'Płacisz karę za nielegalne przerabianie odpadów na karmę.'},
+        {name: 'protests', penalty: 1000, icon: 'event_protests', title: 'Protesty lokalnych społeczności!', message: 'Miejscowi narzekają na przykry zapach! Płacisz karę za zalegające odpady.'}
     ];
 
-    this.probability = [0.0, 0.0, 0.0, 0.0, 0.0];
+    this.probability = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
 
     this.event = null;
 
@@ -130,11 +131,18 @@ Events.prototype.randomEvents = function() {
 
                 break;
 
-            case 'intervention':
+            case 'inspection':
                 // event can happen
                 ok = true;
 
+                // clear recycled stats
+                simulator.farm.carcassStorage.stats.recycled = 0;
+
                 break;
+
+            default:
+                // event can happen
+                ok = true;
         }
 
         if(ok) {
@@ -189,6 +197,26 @@ Events.prototype.updateProbabilities = function() {
         }
     } else {
         this.probability[3] = 0;
+    }
+
+    // inspection probability
+    if(simulator.farm.carcassStorage.stats.recycled > 0) {
+        if(this.probability[4] < 1) {
+            this.probability[4] += 0.01;
+            this.probability[4] = +this.probability[4].toFixed(3);
+        }
+    } else {
+        this.probability[4] = 0;
+    }
+
+    // protests probability
+    if(simulator.farm.carcassStorage.state.full) {
+        if(this.probability[5] < 1) {
+            this.probability[5] += 0.01;
+            this.probability[5] = +this.probability[5].toFixed(3);
+        }
+    } else {
+        this.probability[5] = 0;
     }
 };
 

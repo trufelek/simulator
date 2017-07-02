@@ -77,6 +77,7 @@ Incubator.prototype.incubate = function(incubator) {
 
 Incubator.prototype.endIncubation = function() {
     this.stats.incubated += this.increase;
+    simulator.farm.incubated += this.increase;
     Incubator.incubated.push(this);
 };
 

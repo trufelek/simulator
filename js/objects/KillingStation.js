@@ -91,6 +91,7 @@ KillingStation.prototype.endKilling = function() {
 
     // count killed animals
     this.stats.killed += this.attributes.stack.decrease;
+    simulator.farm.killed += this.attributes.stack.decrease;
 
     // play sound
     this.sound.play();
