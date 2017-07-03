@@ -28,6 +28,10 @@ var create = {
 
         // create events
         simulator.events = new Events();
+
+        if(game.paused) {
+            game.paused = false;
+        }
     },
 
     createZigZagMap : function() {

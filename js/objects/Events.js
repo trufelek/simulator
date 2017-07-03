@@ -320,13 +320,15 @@ Events.prototype.gameOver = function() {
 
     this.sound.onStop.add(function() {
         // create logo and buttons
-        gameover = game.add.sprite(game.width / 2, game.height / 2 - 50, 'gameover');
+        gameover = game.add.sprite(game.camera.x + (game.width/2), game.camera.y + (game.height/2) - 50, 'gameover');
         gameover.anchor.setTo(0.5);
+        gameover.fixedToCamera = true;
 
-        restart = game.add.sprite(game.width / 2, game.height / 2 + 150, 'restart_hover');
+        restart = game.add.sprite(game.camera.x + (game.width/2), game.camera.y + (game.height/2) + 150, 'restart_hover');
         restart.anchor.setTo(0.5);
         restart.inputEnabled = true;
         restart.input.useHandCursor = true;
+        restart.fixedToCamera = true;
 
         // pause game
         game.paused = true;
@@ -334,8 +336,8 @@ Events.prototype.gameOver = function() {
 
     game.input.onDown.add(function(event) {
         if(restart) {
-            var x = restart.x - restart.width / 2;
-            var y = restart.y - restart.height / 2;
+            var x = restart.worldPosition.x - restart.width / 2;
+            var y = restart.worldPosition.y - restart.height / 2;
             var w = restart.width;
             var h = restart.height;
 
