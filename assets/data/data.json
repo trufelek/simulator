@@ -25,6 +25,8 @@
     "gameover": { "type": "image", "path": "assets/img/gameover.png" },
     "start": { "type": "image", "path": "assets/img/start.png" },
     "start_hover": { "type": "image", "path": "assets/img/start_hover.png" },
+    "authors": { "type": "image", "path": "assets/img/authors_inactive.png" },
+    "petition": { "type": "image", "path": "assets/img/petition_inactive.png" },
     "restart": { "type": "image", "path": "assets/img/restart.png" },
     "restart_hover": { "type": "image", "path": "assets/img/restart_hover.png" },
     "background": { "type": "image", "path": "assets/img/background.png" },

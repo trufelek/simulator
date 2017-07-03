@@ -38,13 +38,26 @@ var load = {
         this.loaderBar.destroy();
 
         // show home screen
-        this.home = game.add.sprite(game.world.centerX, game.world.centerY - 50, 'home');
+        this.home = game.add.sprite(game.world.centerX, game.world.centerY - 125, 'home');
         this.home.anchor.setTo(0.5);
 
-        this.start = game.add.sprite(game.world.centerX, game.world.centerY + 150, 'start');
+        // start button
+        this.start = game.add.sprite(game.world.centerX, game.world.centerY + 50, 'start');
         this.start.anchor.setTo(0.5);
         this.start.inputEnabled = true;
         this.start.input.useHandCursor = true;
+
+        // authors button
+        this.authors = game.add.sprite(game.world.centerX, game.world.centerY + 125, 'authors');
+        this.authors.anchor.setTo(0.5);
+        this.authors.inputEnabled = true;
+        this.authors.input.useHandCursor = true;
+
+        // authors button
+        this.petition = game.add.sprite(game.world.centerX, game.world.centerY + 200, 'petition');
+        this.petition.anchor.setTo(0.5);
+        this.petition.inputEnabled = true;
+        this.petition.input.useHandCursor = true;
 
         // start button interactions
         this.start.events.onInputOver.add(function() {
@@ -61,5 +74,5 @@ var load = {
     startGame: function() {
         // start create state
         game.state.start('create');
-    }
+    },
 };
