@@ -95,11 +95,13 @@ Events.prototype.randomEvents = function() {
                     var randomSickCage = Math.round(this.random(0, crowdedPavilion.fullCages.length - 1));
                     var sickCage = crowdedPavilion.fullCages[randomSickCage];
 
-                    // make cage sick
-                    sickCage.sick();
+                    if(!sickCage.state.sick) {
+                        // make cage sick
+                        sickCage.sick();
 
-                    // event can happen
-                    ok = true;
+                        // event can happen
+                        ok = true;
+                    }
                 }
 
                 break;
@@ -124,6 +126,8 @@ Events.prototype.randomEvents = function() {
                             }
                         }
                     }
+
+                    game.time.events.add(Phaser.Timer.SECOND * 20, this.epidemicCoundtown, this, epidemicPavilion);
 
                     // event can happen
                     ok = true;
@@ -345,4 +349,24 @@ Events.prototype.gameOver = function() {
         }
 
     }, self);
+};
+
+Events.prototype.epidemicCoundtown = function(epidemicPavilion) {
+    if(epidemicPavilion.sickCages.length) {
+        var cages = epidemicPavilion.sickCages;
+
+        //make all cages in pavilion sick
+        for(var c in cages) {
+            if(cages.hasOwnProperty(c)) {
+                var cage =  epidemicPavilion.sickCages[c];
+                cage.dieFromSickness();
+
+                if(c == epidemicPavilion.sickCages.length - 1) {
+                    // update pavilion state
+                    epidemicPavilion.sickCages = [];
+                    epidemicPavilion.updateState();
+                }
+            }
+        }
+    }
 };

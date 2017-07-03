@@ -386,6 +386,64 @@ Cage.prototype.heal = function(cage) {
     cage.state.sick = false;
 };
 
+Cage.prototype.dieFromSickness = function() {
+    // play kill sound
+    this.actions.kill.sounds[0].play();
+
+    // hide warning
+    simulator.gui.hideWarning(this.warning);
+    this.warning = null;
+
+    // remove from all sick cages
+    if(Cage.sick.indexOf(this) > -1) {
+        Cage.sick.splice(Cage.sick.indexOf(this), 1);
+    }
+
+    // if there is no sick cages remove pavilion from epidemic group and update its state
+    if(!this.pavilion.sickCages.length) {
+        if(Pavilion.epidemic.indexOf(this.pavilion) > -1) {
+            Pavilion.epidemic.splice(Cage.sick.indexOf(Pavilion.epidemic.indexOf(this.pavilion)), 1);
+        }
+
+        this.pavilion.state.epidemic = false;
+    }
+
+    // update state
+    this.state.sick = false;
+    this.actions.heal.visible = false;
+
+    // destroy timer
+    this.resetTimer();
+
+    // change texture
+    this.loadTexture('cage_double_empty', 0, false);
+
+    // reset current cage
+    this.state.enabled = false;
+
+    // set attributes to min
+    this.attributes.condition.current = this.attributes.condition.min;
+
+    //update actions
+    this.actions.add.visible = true;
+    this.actions.kill.visible = false;
+
+    // remove cage from all full cages
+    if(Cage.full.indexOf(this) > -1) {
+        Cage.full.splice(Cage.full.indexOf(this), 1);
+    }
+
+    // remove cage from pavilion full cages
+    if(this.pavilion.fullCages.indexOf(this) > -1) {
+        this.pavilion.fullCages.splice(this.pavilion.fullCages.indexOf(this), 1);
+    }
+
+    // remove if cage in miserable
+    if(Cage.miserable.indexOf(this) > -1) {
+        Cage.miserable.splice(Cage.miserable.indexOf(this), 1);
+    }
+};
+
 Cage.prototype.cageReady = function() {
     // cage ready to kill
     this.actions.kill.enabled = true;
