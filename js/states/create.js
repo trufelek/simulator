@@ -9,7 +9,7 @@ var create = {
 
         // add background music
         simulator.music = game.add.audio('background_music');
-        simulator.music.loopFull(0.4);
+        simulator.music.loopFull(1.5);
 
         // set world bounds
         game.world.setBounds(0, 0, simulator.settings.width, simulator.settings.height);
